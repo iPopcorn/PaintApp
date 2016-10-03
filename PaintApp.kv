@@ -1,0 +1,60 @@
+<RootScreen>:
+    name: 'rootscreen'
+    #canvas:
+    #    Rectangle:
+    #        Color:
+    #            rgba: 0,1,0,0.5
+    BoxLayout:
+        id: myLayout
+        orientation: 'vertical'
+        size_hint: (None, None)
+        size: root.width * 0.9, root.height * 0.9
+        pos: root.width * 0.05, root.height * 0.05
+        canvas:
+            Color:
+                rgba: (1,0,0,0.5)
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        RootCanvas:
+        Toolbar:
+            size_hint: (1, 0.1)
+
+<RootCanvas>:
+    BoxLayout:
+        size_hint: (None, None)
+        size: root.width, root.height
+        pos: self.parent.pos
+        canvas:
+            Color:
+                rgba: 0,0,1,1
+            Rectangle:
+                pos: self.pos
+                size: self.size
+        Label:
+            text: "This is the Canvas"
+<Toolbar>:
+    canvas:
+        Color:
+            rgba: 0.5,0.8, 1, 1
+        Rectangle:
+            size: self.size
+            pos: self.pos
+    BoxLayout:
+        size_hint: (None, None)
+        size: root.width, root.height
+        spacing: self.width * .02
+        pos: self.parent.pos
+        orientation: 'horizontal'
+        Button:
+            text: 'Color Selection'
+            on_release: print('Color Selection Pressed!')
+        Button:
+            text: 'Shape Selection'
+            on_release: print('Shape Selection Pressed!')
+        Button:
+            text: 'Bucket Tool'
+            on_release: print('Bucket Tool Pressed!')
+        Button:
+            text: 'Undo Button'
+            on_release: print('Undo Button Pressed!')
