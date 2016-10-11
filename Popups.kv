@@ -1,0 +1,52 @@
+<ColorSelectPopup>
+    size_hint: (0.5,0.5)
+    title: 'Color Selector'
+    BoxLayout:
+        id: colorLayout
+        #size_hint: (None,None)
+        #size: root.width * 0.75, root.height * 0.75
+        orientation: 'vertical'
+        Label:
+            text: 'Red'
+        Slider:
+            id: redSlider
+            min: 0
+            max: 100
+            value: 0
+        Label:
+            text: 'Green'
+        Slider:
+            id: greenSlider
+            min: 0
+            max: 100
+            value: 0
+        Label:
+            text: 'Blue'
+        Slider:
+            id: blueSlider
+            min: 0
+            max: 100
+            value: 0
+        BoxLayout:
+            orientation: 'horizontal'
+            spacing: root.height * 0.05
+            Button:
+                text: 'Apply'
+            Button:
+                text: 'Cancel'
+
+<ShapeSelectPopup>
+    size_hint: (0.5,0.5)
+    title: 'Shape Selector'
+    BoxLayout:
+        id: colorLayout
+        #size_hint: (None,None)
+        #size: root.width * 0.75, root.height * 0.75
+        orientation: 'vertical'
+        spacing: self.height * 0.05
+        Button:
+            text: 'Square'
+        Button:
+            text: 'Line'
+        Button:
+            text: 'Circle'
