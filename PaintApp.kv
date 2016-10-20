@@ -1,60 +1,43 @@
+#:include Popups.kv
+
+# this is the rule for the RootScreen object
+# I will only comment this object, the rest are very similar
 <RootScreen>:
-    name: 'rootscreen'
-    #canvas:
-    #    Rectangle:
-    #        Color:
-    #            rgba: 0,1,0,0.5
-    BoxLayout:
-        id: myLayout
-        orientation: 'vertical'
-        size_hint: (None, None)
-        size: root.width * 0.9, root.height * 0.9
-        pos: root.width * 0.05, root.height * 0.05
-        canvas:
-            Color:
-                rgba: (1,0,0,0.5)
-            Rectangle:
-                pos: self.pos
-                size: self.size
-        RootCanvas:
-        Toolbar:
-            size_hint: (1, 0.1)
+    name: 'rootscreen' # Every screen must have a name
+    BoxLayout: # Layouts define how widgets are displayed
+        id: rootLayout # id allows us to reference this layout in python
+        orientation: 'vertical' # orientation, stack widgets on top of each other rather than side by side
+        size_hint: (None, None) # No size hint, means we will manually declare the size
+        size: root.width * 0.9, root.height * 0.9 # Manually declare size, could have said size_hint: (0.9, 0.9)
+        pos: root.width * 0.05, root.height * 0.05 # Define position so that everything is centered.
 
 <RootCanvas>:
     BoxLayout:
+        id: canvasLayout
         size_hint: (None, None)
         size: root.width, root.height
         pos: self.parent.pos
-        canvas:
-            Color:
-                rgba: 0,0,1,1
-            Rectangle:
-                pos: self.pos
-                size: self.size
-        Label:
-            text: "This is the Canvas"
 <Toolbar>:
-    canvas:
-        Color:
-            rgba: 0.5,0.8, 1, 1
-        Rectangle:
-            size: self.size
-            pos: self.pos
     BoxLayout:
+        id: toolbarLayout
         size_hint: (None, None)
         size: root.width, root.height
         spacing: self.width * .02
         pos: self.parent.pos
         orientation: 'horizontal'
-        Button:
+        ToolbarButton:
+            id: colorBtn
             text: 'Color Selection'
-            on_release: print('Color Selection Pressed!')
-        Button:
+            # on_release: self.colorSelectCallback()
+        ToolbarButton:
+            id: shapeBtn
             text: 'Shape Selection'
-            on_release: print('Shape Selection Pressed!')
-        Button:
+            #on_release: self.shapeSelectCallback()
+        ToolbarButton:
+            id: bucketBtn
             text: 'Bucket Tool'
-            on_release: print('Bucket Tool Pressed!')
-        Button:
+            #on_release: self.bucketToolCallback()
+        ToolbarButton:
+            id: undoBtn
             text: 'Undo Button'
-            on_release: print('Undo Button Pressed!')
+            #on_release: self.undoToolCallback()
