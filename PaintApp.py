@@ -17,10 +17,10 @@ This class contains 3 buttons, when the user taps a button, the popup should clo
 draw whatever shape the user selected.
 '''
 class ShapeSelectPopup(Popup):
-    def __init__(self, parentScreen, **kwargs):
+    def __init__(self, parentscreen, **kwargs):
         super(ShapeSelectPopup, self).__init__(**kwargs)
         # local variable for storing the parent screen of this popup
-        self.parentScreen = parentScreen
+        self.parentScreen = parentscreen
 
         # link the layout object
         myLayout = self.ids.shapeLayout
@@ -42,15 +42,15 @@ class ShapeSelectPopup(Popup):
 
     def selectSquare(self, btn):
         print("selectSquare()")
-        #TODO: Implement square selection logic
+        self.parentScreen.currentDrawingWidget = SquareDraw()
         self.dismiss()
     def selectCircle(self, btn):
         print("selectCircle()")
-        #TODO: Implement circle selection logic
+        self.parentScreen.currentDrawingWidget = CircleDraw()
         self.dismiss()
     def selectLine(self, btn):
         print("selectLine()")
-        #TODO: Implement line selection logic
+        self.parentScreen.currentDrawingWidget = LineDraw()
         self.dismiss()
 
 '''
@@ -94,10 +94,27 @@ class ColorSelectPopup(Popup):
         myLayout.add_widget(blueSlider)
         myLayout.add_widget(btnLayout)
 
-    def applyCallback(self, btn):
-        print("applyCallback()")
+# Changes shape color to red - Eric Avery
+    def selectRed(self, btn):
+        print("selectRed()")
+        self.parentScreen.color = (1, 0, 0)
         self.dismiss()
-        #TODO: implement color selection logic here. This class has access to the drawer via self.parentScreen
+
+# Changes shape color to blue - Eric Avery
+    def selectBlue(self, btn):
+        print("selectBlue()")
+        self.parentScreen.color = (0, 1, 0)
+        self.dismiss()
+
+# Changes shape color to green - Eric Avery
+    def selectGreen(self, btn):
+        print("selectGreen()")
+        self.parentScreen.color = (0, 0, 1)
+        self.dismiss()
+
+
+
+
 class ToolbarButton(Button):
     def colorSelectCallback(self):
         print("colorSelectCallback()")
@@ -116,14 +133,34 @@ class ToolbarButton(Button):
 This widget draws circles. Implementation for drawing is left up to the developer to figure out a way
 that makes sense.
 '''
+
+# Circle draw function - Eric Avery
 class CircleDraw(Widget):
     def on_touch_down(self, touch):
         color = (1,0,0)
         with self.canvas:
             Color(*color)
             d = 30.
-            #Ellipse(pos=(touch.x - d / 2, touch.y - d / 2), size=(d,d))
-            Line(circle=(touch.x, touch.y, d),width=2)
+            Line(circle=(touch.x, touch.y, d), width=2)
+
+#Square draw function - Eric Avery
+class SquareDraw(Widget):
+    def on_touch_down(self, touch):
+        color = (1,0,0)
+        with self.canvas:
+            Color(*color)
+            Rectangle(pos=(touch.x, touch.y), size=(2, 2))
+
+#Line draw function - Eric Avery
+class LineDraw(Widget):
+    def on_touch_down(self, touch):
+        color = (1,0,0)
+        with self.canvas:
+            Color(*color)
+            touch.ud['line'] = Line(points=(touch.x, touch.y))
+    def on_touch_move(self, touch):
+        touch.ud['line'].points += [touch.x, touch.y]
+
 
 
 class Toolbar(Widget):
@@ -162,7 +199,7 @@ class RootScreen(Screen):
         rootCanvas = RootCanvas()
         toolbar = Toolbar(size_hint_y=0.1)
 
-        # get drawing widgeth
+        # get drawing widget
         self.curDrawingWidget = rootCanvas.getCurDrawingWidget()
 
         #link and bind all toolbar buttons
