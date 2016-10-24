@@ -3,7 +3,7 @@ from kivy.lang import Builder
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.widget import Widget
 from kivy.uix.screenmanager import Screen, ScreenManager
-from kivy.graphics import Color, Ellipse, Line
+from kivy.graphics import *
 from kivy.uix.button import Button
 from kivy.uix.popup import Popup
 from kivy.uix.label import Label
@@ -94,6 +94,10 @@ class ColorSelectPopup(Popup):
         myLayout.add_widget(blueSlider)
         myLayout.add_widget(btnLayout)
 
+    def applyCallback(self):
+        print("applyCallback")
+        self.dismiss()
+
 # Changes shape color to red - Eric Avery
     def selectRed(self, btn):
         print("selectRed()")
@@ -149,7 +153,7 @@ class SquareDraw(Widget):
         color = (1,0,0)
         with self.canvas:
             Color(*color)
-            Rectangle(pos=(touch.x, touch.y), size=(2, 2))
+            Rectangle(pos=(touch.x, touch.y), size=(75, 75))
 
 #Line draw function - Eric Avery
 class LineDraw(Widget):
@@ -173,7 +177,7 @@ but I think it would be easiest to create new drawing widgets with new settings 
 class RootCanvas(Widget):
     def __init__(self, **kwargs):
         super(RootCanvas, self).__init__(**kwargs)
-        self.currentDrawingWidget = CircleDraw()
+        self.currentDrawingWidget = LineDraw()
         self.ids.canvasLayout.add_widget(self.currentDrawingWidget)
 
     # return the current drawing widget.
