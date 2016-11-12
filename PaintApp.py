@@ -31,7 +31,7 @@ class ShapeSelectPopup(Popup):
         lineBtn = Button(text='Line')
 
         # bind to callbacks
-        squareBtn.bind(on_release=self.selectSquare)
+        squareBtn.bind(on_release=self.parentScreen.changeShape("square"))
         circleBtn.bind(on_release=self.selectCircle)
         lineBtn.bind(on_release=self.selectLine)
 
@@ -42,15 +42,15 @@ class ShapeSelectPopup(Popup):
 
     def selectSquare(self, btn):
         print("selectSquare()")
-        self.parentScreen.currentDrawingWidget = SquareDraw()
+        self.parentScreen.changeShape("square");
         self.dismiss()
     def selectCircle(self, btn):
         print("selectCircle()")
-        self.parentScreen.currentDrawingWidget = CircleDraw()
+        self.parentScreen.changeShape("circle");
         self.dismiss()
     def selectLine(self, btn):
         print("selectLine()")
-        self.parentScreen.currentDrawingWidget = LineDraw()
+        self.parentScreen.changeShape("line");
         self.dismiss()
 
 '''
@@ -128,8 +128,9 @@ class ToolbarButton(Button):
         print("shapeSelectCallback()")
         shapePopup = ShapeSelectPopup()
         shapePopup.open()
-    def bucketToolCallback(self):
-        print("bucketSelectCallback()")
+    def clearScreenCallback(self):
+        print("clearScreenCallback()")
+
     def undoToolCallback(self):
         print("undoSelectCallback()")
 
@@ -141,7 +142,7 @@ that makes sense.
 # Circle draw function - Eric Avery
 class CircleDraw(Widget):
     def on_touch_down(self, touch):
-        color = (1,0,0)
+        color = (0,0,1)
         with self.canvas:
             Color(*color)
             d = 30.
@@ -150,7 +151,7 @@ class CircleDraw(Widget):
 #Square draw function - Eric Avery
 class SquareDraw(Widget):
     def on_touch_down(self, touch):
-        color = (1,0,0)
+        color = (0,1,0)
         with self.canvas:
             Color(*color)
             Rectangle(pos=(touch.x, touch.y), size=(75, 75))
@@ -176,13 +177,22 @@ but I think it would be easiest to create new drawing widgets with new settings 
 '''
 class RootCanvas(Widget):
     def __init__(self, **kwargs):
-        super(RootCanvas, self).__init__(**kwargs)
-        self.currentDrawingWidget = LineDraw()
-        self.ids.canvasLayout.add_widget(self.currentDrawingWidget)
+        super(RootCanvas, self).__init__(**kwargs);
+        self.currentDrawingWidget = CircleDraw();
+        self.ids.canvasLayout.add_widget(self.currentDrawingWidget);
 
     # return the current drawing widget.
     def getCurDrawingWidget(self):
-        return self.currentDrawingWidget
+        return self.currentDrawingWidget;
+
+    def setCurDrawingWidget(self, myString):
+        if myString == "square":
+            self.currentDrawingWidget = SquareDraw();
+        elif myString == "circle":
+            self.currentDrawingWidget = CircleDraw();
+        elif myString == "line":
+            self.currentDrawingWidget = LineDraw();
+
 
 '''
 RootScreen() extends Screen https://kivy.org/docs/api-kivy.modules.screen.html
@@ -200,24 +210,24 @@ class RootScreen(Screen):
         self.shapeSelectPopup = ShapeSelectPopup(self)
 
         # create root canvas and toolbar objects
-        rootCanvas = RootCanvas()
+        self.rootCanvas = RootCanvas()
         toolbar = Toolbar(size_hint_y=0.1)
 
         # get drawing widget
-        self.curDrawingWidget = rootCanvas.getCurDrawingWidget()
+        self.curDrawingWidget = self.rootCanvas.getCurDrawingWidget()
 
         #link and bind all toolbar buttons
         colorBtn = toolbar.ids.colorBtn
         colorBtn.bind(on_release=self.openColorPopup)
         shapeBtn = toolbar.ids.shapeBtn
         shapeBtn.bind(on_release=self.openShapePopup)
-        bucketBtn = toolbar.ids.bucketBtn
-        bucketBtn.bind(on_release=self.selectBucket)
+        clearBtn = toolbar.ids.clearBtn
+        clearBtn.bind(on_release=self.clearScreen)
         undoBtn = toolbar.ids.undoBtn
         undoBtn.bind(on_release=self.undoCallback)
 
         # add root canvas and toolbar objects to layout
-        rootLayout.add_widget(rootCanvas)
+        rootLayout.add_widget(self.rootCanvas)
         rootLayout.add_widget(toolbar)
 
     def openColorPopup(self, button):
@@ -228,13 +238,24 @@ class RootScreen(Screen):
         print("openColorPopup()")
         self.shapeSelectPopup.open()
 
-    def selectBucket(self, button):
-        print("selectBucket()")
-        # TODO: Implement bucket tool logic
+    def clearScreen(self, button):
+        print("clearScreen()")
+        self.rootCanvas.canvas.clear()
+        #reset canvas to have currentDrawingWidget
 
     def undoCallback(self, button):
         print("undoCallback()")
         # TODO: Implement undo logic
+
+    def changeShape(self, myString):
+        print("changeShape()")
+        if myString == "square":
+            self.rootCanvas.setCurDrawingWidget(myString);
+            self.rootCanvas.curDrawingWidget = self.rootCanvas.getCurDrawingWidget()
+        elif myString == "circle":
+            self.rootCanvas.setCurDrawingWidget(myString);
+        elif myString == "line":
+            self.rootCanvas.setCurDrawingWidget(myString);
 '''
 RootManager() extends ScreenManager https://kivy.org/docs/api-kivy.uix.screenmanager.html
 This class doesn't do anything other than hold our screen. It may be useful to remove this class completely.
@@ -244,6 +265,7 @@ class RootManager(ScreenManager):
         super(RootManager, self).__init__(**kwargs)
         rootScreen = RootScreen()
         self.add_widget(rootScreen)
+
 
 '''
 PaintApp extends App https://kivy.org/docs/api-kivy.app.html
