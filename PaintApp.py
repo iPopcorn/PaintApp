@@ -31,27 +31,14 @@ class ShapeSelectPopup(Popup):
         lineBtn = Button(text='Line')
 
         # bind to callbacks
-        squareBtn.bind(on_release=self.parentScreen.changeShape("square"))
-        circleBtn.bind(on_release=self.selectCircle)
-        lineBtn.bind(on_release=self.selectLine)
+        squareBtn.bind(on_release=self.parentScreen.selectSquare)
+        circleBtn.bind(on_release=self.parentScreen.selectCircle)
+        lineBtn.bind(on_release=self.parentScreen.selectLine)
 
         # add buttons to layout
         myLayout.add_widget(squareBtn)
         myLayout.add_widget(circleBtn)
         myLayout.add_widget(lineBtn)
-
-    def selectSquare(self, btn):
-        print("selectSquare()")
-        self.parentScreen.changeShape("square");
-        self.dismiss()
-    def selectCircle(self, btn):
-        print("selectCircle()")
-        self.parentScreen.changeShape("circle");
-        self.dismiss()
-    def selectLine(self, btn):
-        print("selectLine()")
-        self.parentScreen.changeShape("line");
-        self.dismiss()
 
 '''
 ColorSelectPopup() extends Kivy's Popup class https://kivy.org/docs/api-kivy.uix.popup.html
@@ -98,24 +85,6 @@ class ColorSelectPopup(Popup):
         print("applyCallback")
         self.dismiss()
 
-# Changes shape color to red - Eric Avery
-    def selectRed(self, btn):
-        print("selectRed()")
-        self.parentScreen.color = (1, 0, 0)
-        self.dismiss()
-
-# Changes shape color to blue - Eric Avery
-    def selectBlue(self, btn):
-        print("selectBlue()")
-        self.parentScreen.color = (0, 1, 0)
-        self.dismiss()
-
-# Changes shape color to green - Eric Avery
-    def selectGreen(self, btn):
-        print("selectGreen()")
-        self.parentScreen.color = (0, 0, 1)
-        self.dismiss()
-
 
 
 
@@ -130,7 +99,6 @@ class ToolbarButton(Button):
         shapePopup.open()
     def clearScreenCallback(self):
         print("clearScreenCallback()")
-
     def undoToolCallback(self):
         print("undoSelectCallback()")
 
@@ -147,6 +115,8 @@ class CircleDraw(Widget):
             Color(*color)
             d = 30.
             Line(circle=(touch.x, touch.y, d), width=2)
+    def circleColor(self):
+        return Color(0,0,1)
 
 #Square draw function - Eric Avery
 class SquareDraw(Widget):
@@ -181,17 +151,31 @@ class RootCanvas(Widget):
         self.currentDrawingWidget = CircleDraw();
         self.ids.canvasLayout.add_widget(self.currentDrawingWidget);
 
-    # return the current drawing widget.
+    # return the current drawing widget. - Eric Avery
     def getCurDrawingWidget(self):
         return self.currentDrawingWidget;
 
-    def setCurDrawingWidget(self, myString):
-        if myString == "square":
-            self.currentDrawingWidget = SquareDraw();
-        elif myString == "circle":
-            self.currentDrawingWidget = CircleDraw();
-        elif myString == "line":
-            self.currentDrawingWidget = LineDraw();
+    # change the drawing widget methodology - Eric Avery
+    def setCurDrawingWidget(self, mystring):
+        if mystring == "square":
+            self.ids.canvasLayout.remove_widget(self.currentDrawingWidget)
+            self.currentDrawingWidget = SquareDraw()
+            self.ids.canvasLayout.add_widget(self.currentDrawingWidget)
+        elif mystring == "circle":
+            self.ids.canvasLayout.remove_widget(self.currentDrawingWidget)
+            self.currentDrawingWidget = CircleDraw()
+            self.ids.canvasLayout.add_widget(self.currentDrawingWidget)
+        elif mystring == "line":
+            self.ids.canvasLayout.remove_widget(self.currentDrawingWidget)
+            self.currentDrawingWidget = LineDraw()
+            self.ids.canvasLayout.add_widget(self.currentDrawingWidget)
+        return self.currentDrawingWidget
+
+    #clear screen methodology - Eric Avery
+    def clearWidgets(self):
+        self.ids.canvasLayout.remove_widget(self.currentDrawingWidget)
+        self.currentDrawingWidget = CircleDraw()
+        self.ids.canvasLayout.add_widget(self.currentDrawingWidget)
 
 
 '''
@@ -215,6 +199,8 @@ class RootScreen(Screen):
 
         # get drawing widget
         self.curDrawingWidget = self.rootCanvas.getCurDrawingWidget()
+        self.color = CircleDraw.circleColor(self)
+
 
         #link and bind all toolbar buttons
         colorBtn = toolbar.ids.colorBtn
@@ -238,24 +224,54 @@ class RootScreen(Screen):
         print("openColorPopup()")
         self.shapeSelectPopup.open()
 
+    #COMPLETED. Resets drawing widget to circle by default - Eric Avery
     def clearScreen(self, button):
         print("clearScreen()")
-        self.rootCanvas.canvas.clear()
-        #reset canvas to have currentDrawingWidget
+        self.rootCanvas.clearWidgets()
 
     def undoCallback(self, button):
         print("undoCallback()")
         # TODO: Implement undo logic
 
-    def changeShape(self, myString):
-        print("changeShape()")
-        if myString == "square":
-            self.rootCanvas.setCurDrawingWidget(myString);
-            self.rootCanvas.curDrawingWidget = self.rootCanvas.getCurDrawingWidget()
-        elif myString == "circle":
-            self.rootCanvas.setCurDrawingWidget(myString);
-        elif myString == "line":
-            self.rootCanvas.setCurDrawingWidget(myString);
+    #all three shape selectors work - Eric Avery
+    def selectSquare(self, btn):
+        print("selectSquare()")
+        self.curDrawingWidget = self.rootCanvas.setCurDrawingWidget("square")
+        self.shapeSelectPopup.dismiss()
+
+    def selectCircle(self, btn):
+        print("selectCircle()")
+        self.curDrawingWidget = self.rootCanvas.setCurDrawingWidget("circle")
+        self.shapeSelectPopup.dismiss()
+
+    def selectLine(self, btn):
+        print("selectLine()")
+        self.curDrawingWidget = self.rootCanvas.setCurDrawingWidget("line")
+        self.shapeSelectPopup.dismiss()
+
+
+##still in development for iteration 4 - Eric Avery
+    # Changes shape color to red - Eric Avery
+    def selectRed(self, btn):
+        print("selectRed()")
+        self.color = CircleDraw.canvas.Color(1, 0, 0)
+        #self.rootCanvas = (1, 0, 0)
+        self.dismiss()
+
+        # Changes shape color to blue - Eric Avery
+
+    def selectBlue(self, btn):
+        print("selectBlue()")
+        self.parentScreen.color = (0, 1, 0)
+        self.dismiss()
+
+        # Changes shape color to green - Eric Avery
+
+    def selectGreen(self, btn):
+        print("selectGreen()")
+        self.parentScreen.color = (0, 0, 1)
+        self.dismiss()
+
 '''
 RootManager() extends ScreenManager https://kivy.org/docs/api-kivy.uix.screenmanager.html
 This class doesn't do anything other than hold our screen. It may be useful to remove this class completely.
