@@ -56,33 +56,36 @@ class ColorSelectPopup(Popup):
         myLayout = self.ids.colorLayout
 
         # create sliders and labels
-        redLabel = Label(text="Red")
-        redSlider = Slider(min=0,max=100,value=0)
-        greenLabel = Label(text="Blue")
-        greenSlider = Slider(min=0, max=100, value=0)
-        blueLabel = Label(text="Blue")
-        blueSlider = Slider(min=0,max=100,value=0)
+        self.redLabel = Label(text="Red")
+        self.redSlider = Slider(min=0,max=100,value=0)
+        self.greenLabel = Label(text="Green")
+        self.greenSlider = Slider(min=0, max=100, value=0)
+        self.blueLabel = Label(text="Blue")
+        self.blueSlider = Slider(min=0,max=100,value=0)
 
         # create Buttons, bind callbacks, and add them to a sub-layout
-        btnLayout = BoxLayout(orientation='horizontal',spacing=self.height * 0.05)
-        applyButton = Button(text='Apply')
-        cancelButton = Button(text='Cancel')
-        applyButton.bind(on_release=self.applyCallback)
-        cancelButton.bind(on_release=self.dismiss)
-        btnLayout.add_widget(applyButton)
-        btnLayout.add_widget(cancelButton)
+        self.btnLayout = BoxLayout(orientation='horizontal',spacing=self.height * 0.05)
+        self.applyButton = Button(text='Apply')
+        self.cancelButton = Button(text='Cancel')
+        self.applyButton.bind(on_release=self.applyCallback)
+        self.cancelButton.bind(on_release=self.dismiss)
+        self.btnLayout.add_widget(self.applyButton)
+        self.btnLayout.add_widget(self.cancelButton)
 
         # add everything to layout
-        myLayout.add_widget(redLabel)
-        myLayout.add_widget(redSlider)
-        myLayout.add_widget(greenLabel)
-        myLayout.add_widget(greenSlider)
-        myLayout.add_widget(blueLabel)
-        myLayout.add_widget(blueSlider)
-        myLayout.add_widget(btnLayout)
+        myLayout.add_widget(self.redLabel)
+        myLayout.add_widget(self.redSlider)
+        myLayout.add_widget(self.greenLabel)
+        myLayout.add_widget(self.greenSlider)
+        myLayout.add_widget(self.blueLabel)
+        myLayout.add_widget(self.blueSlider)
+        myLayout.add_widget(self.btnLayout)
 
-    def applyCallback(self):
+    def applyCallback(self, button):
         print("applyCallback")
+        self.parentScreen.setColor(self.redSlider.value_normalized,
+                                   self.greenSlider.value_normalized,
+                                   self.blueSlider.value_normalized)
         self.dismiss()
 
 
@@ -103,38 +106,101 @@ class ToolbarButton(Button):
         print("undoSelectCallback()")
 
 '''
-This widget draws circles. Implementation for drawing is left up to the developer to figure out a way
-that makes sense.
+The DrawingWidget class is the only drawing widget for the paint app. What the drawing widget does is use a string to
+keep track of what type of shape to draw.
 '''
+class DrawingWidget(Widget):
+    curShape = ""
+    curTouch = None
+    prevTouch = None
+    resetTouch = False
+    radius = 125
+    thickness = 3
 
-# Circle draw function - Eric Avery
-class CircleDraw(Widget):
-    def on_touch_down(self, touch):
-        color = (0,0,1)
-        with self.canvas:
-            Color(*color)
-            d = 30.
-            Line(circle=(touch.x, touch.y, d), width=2)
-    def circleColor(self):
-        return Color(0,0,1)
+    def __init__(self, **kwargs):
+        super(DrawingWidget, self).__init__(*kwargs)
+        #initialize drawing widget to draw circles.
+        self.curShape = "circle"
+        self.color = (0,0,1) #color is a tuple that represents R,G,B, set the default color to Blue
 
-#Square draw function - Eric Avery
-class SquareDraw(Widget):
     def on_touch_down(self, touch):
-        color = (0,1,0)
-        with self.canvas:
-            Color(*color)
-            Rectangle(pos=(touch.x, touch.y), size=(75, 75))
+        #keep track of current and previous touches
+        self.prevTouch = self.curTouch
+        self.curTouch = touch
+        if self.resetTouch: #if reset flag raised, then set the previous touch to none
+            self.prevTouch = None
+            self.resetTouch = False
 
-#Line draw function - Eric Avery
-class LineDraw(Widget):
-    def on_touch_down(self, touch):
-        color = (1,0,0)
-        with self.canvas:
-            Color(*color)
-            touch.ud['line'] = Line(points=(touch.x, touch.y))
-    def on_touch_move(self, touch):
-        touch.ud['line'].points += [touch.x, touch.y]
+        if self.curShape == "circle":
+            with self.canvas:
+                Color(*self.color)
+                Line(circle=(touch.x, touch.y, self.radius), width=self.thickness)
+        elif self.curShape == "square":
+            #self.color = (0,1,0)
+            with self.canvas:
+                Color(*self.color)
+                size = self.radius
+                # Rectangle(pos=(touch.x, touch.y), size=(75, 75))
+                Line(points=(self.curTouch.x - size, self.curTouch.y + size, # top left
+                             self.curTouch.x - size, self.curTouch.y - size, # bot left
+                             self.curTouch.x + size, self.curTouch.y - size, # bot right
+                             self.curTouch.x + size, self.curTouch.y + size,), # top right
+                     width=self.thickness,
+                     close=True)
+        elif self.curShape == "line":
+            if self.prevTouch is None: # if this is the first tap, draw a dot
+                with self.canvas:
+                    Color(*self.color)
+                    Line(circle=(self.curTouch.x, self.curTouch.y, 1))
+            else: # else draw a line from the prev to the cur
+                with self.canvas:
+                    Color(*self.color)
+                    Line(points=(self.prevTouch.x, self.prevTouch.y, self.curTouch.x, self.curTouch.y),width=self.thickness/2)
+                    self.resetTouch = True
+
+    # each draw function changes this widget's curShape string
+    def drawCircle(self):
+        self.curShape = "circle"
+
+    def drawSquare(self):
+        self.curShape = "square"
+
+    def drawLine(self):
+        self.curShape = "line"
+
+    # setColor takes 3 ints and updates this widget's color tuple
+    def setColor(self, red, green, blue):
+        self.color = (red, green, blue)
+
+# # Circle draw function - Eric Avery
+# class CircleDraw(Widget):
+#     def on_touch_down(self, touch):
+#         color = (0,0,1)
+#         with self.canvas:
+#             Color(*color)
+#             d = 30.
+#             Line(circle=(touch.x, touch.y, d), width=2)
+#             #Line(circle=(touch.x, touch.y, d), width=2)
+#     def circleColor(self):
+#         return Color(0,0,1)
+#
+# #Square draw function - Eric Avery
+# class SquareDraw(Widget):
+#     def on_touch_down(self, touch):
+#         color = (0,1,0)
+#         with self.canvas:
+#             Color(*color)
+#             Rectangle(pos=(touch.x, touch.y), size=(75, 75))
+#
+# #Line draw function - Eric Avery
+# class LineDraw(Widget):
+#     def on_touch_down(self, touch):
+#         color = (1,0,0)
+#         with self.canvas:
+#             Color(*color)
+#             touch.ud['line'] = Line(points=(touch.x, touch.y))
+#     def on_touch_move(self, touch):
+#         touch.ud['line'].points += [touch.x, touch.y]
 
 
 
@@ -148,33 +214,34 @@ but I think it would be easiest to create new drawing widgets with new settings 
 class RootCanvas(Widget):
     def __init__(self, **kwargs):
         super(RootCanvas, self).__init__(**kwargs);
-        self.currentDrawingWidget = CircleDraw();
+        #self.currentDrawingWidget = CircleDraw();
+        self.currentDrawingWidget = DrawingWidget();
         self.ids.canvasLayout.add_widget(self.currentDrawingWidget);
 
     # return the current drawing widget. - Eric Avery
     def getCurDrawingWidget(self):
         return self.currentDrawingWidget;
 
-    # change the drawing widget methodology - Eric Avery
-    def setCurDrawingWidget(self, mystring):
-        if mystring == "square":
-            self.ids.canvasLayout.remove_widget(self.currentDrawingWidget)
-            self.currentDrawingWidget = SquareDraw()
-            self.ids.canvasLayout.add_widget(self.currentDrawingWidget)
-        elif mystring == "circle":
-            self.ids.canvasLayout.remove_widget(self.currentDrawingWidget)
-            self.currentDrawingWidget = CircleDraw()
-            self.ids.canvasLayout.add_widget(self.currentDrawingWidget)
-        elif mystring == "line":
-            self.ids.canvasLayout.remove_widget(self.currentDrawingWidget)
-            self.currentDrawingWidget = LineDraw()
-            self.ids.canvasLayout.add_widget(self.currentDrawingWidget)
-        return self.currentDrawingWidget
+    # # change the drawing widget methodology - Eric Avery
+    # def setCurDrawingWidget(self, mystring):
+    #     if mystring == "square":
+    #         self.ids.canvasLayout.remove_widget(self.currentDrawingWidget)
+    #         self.currentDrawingWidget = SquareDraw()
+    #         self.ids.canvasLayout.add_widget(self.currentDrawingWidget)
+    #     elif mystring == "circle":
+    #         self.ids.canvasLayout.remove_widget(self.currentDrawingWidget)
+    #         self.currentDrawingWidget = CircleDraw()
+    #         self.ids.canvasLayout.add_widget(self.currentDrawingWidget)
+    #     elif mystring == "line":
+    #         self.ids.canvasLayout.remove_widget(self.currentDrawingWidget)
+    #         self.currentDrawingWidget = LineDraw()
+    #         self.ids.canvasLayout.add_widget(self.currentDrawingWidget)
+    #     return self.currentDrawingWidget
 
     #clear screen methodology - Eric Avery
     def clearWidgets(self):
         self.ids.canvasLayout.remove_widget(self.currentDrawingWidget)
-        self.currentDrawingWidget = CircleDraw()
+        self.currentDrawingWidget = DrawingWidget()
         self.ids.canvasLayout.add_widget(self.currentDrawingWidget)
 
 
@@ -199,7 +266,7 @@ class RootScreen(Screen):
 
         # get drawing widget
         self.curDrawingWidget = self.rootCanvas.getCurDrawingWidget()
-        self.color = CircleDraw.circleColor(self)
+        # self.color = CircleDraw.circleColor(self)
 
 
         #link and bind all toolbar buttons
@@ -236,41 +303,47 @@ class RootScreen(Screen):
     #all three shape selectors work - Eric Avery
     def selectSquare(self, btn):
         print("selectSquare()")
-        self.curDrawingWidget = self.rootCanvas.setCurDrawingWidget("square")
+        #self.curDrawingWidget = self.rootCanvas.setCurDrawingWidget("square")
+        self.rootCanvas.currentDrawingWidget.drawSquare()
         self.shapeSelectPopup.dismiss()
 
     def selectCircle(self, btn):
         print("selectCircle()")
-        self.curDrawingWidget = self.rootCanvas.setCurDrawingWidget("circle")
+        #self.curDrawingWidget = self.rootCanvas.setCurDrawingWidget("circle")
+        self.rootCanvas.currentDrawingWidget.drawCircle()
         self.shapeSelectPopup.dismiss()
 
     def selectLine(self, btn):
         print("selectLine()")
-        self.curDrawingWidget = self.rootCanvas.setCurDrawingWidget("line")
+        #self.curDrawingWidget = self.rootCanvas.setCurDrawingWidget("line")
+        self.rootCanvas.currentDrawingWidget.drawLine()
         self.shapeSelectPopup.dismiss()
 
+    def setColor(self, redVal, greenVal, blueVal):
+        self.rootCanvas.currentDrawingWidget.setColor(redVal, greenVal, blueVal)
 
-##still in development for iteration 4 - Eric Avery
-    # Changes shape color to red - Eric Avery
-    def selectRed(self, btn):
-        print("selectRed()")
-        self.color = CircleDraw.canvas.Color(1, 0, 0)
-        #self.rootCanvas = (1, 0, 0)
-        self.dismiss()
 
-        # Changes shape color to blue - Eric Avery
 
-    def selectBlue(self, btn):
-        print("selectBlue()")
-        self.parentScreen.color = (0, 1, 0)
-        self.dismiss()
-
-        # Changes shape color to green - Eric Avery
-
-    def selectGreen(self, btn):
-        print("selectGreen()")
-        self.parentScreen.color = (0, 0, 1)
-        self.dismiss()
+#     # Changes shape color to red - Eric Avery
+#     def selectRed(self, btn):
+#         print("selectRed()")
+#         self.color = CircleDraw.canvas.Color(1, 0, 0)
+#         #self.rootCanvas = (1, 0, 0)
+#         self.dismiss()
+#
+#         # Changes shape color to blue - Eric Avery
+#
+#     def selectBlue(self, btn):
+#         print("selectBlue()")
+#         self.parentScreen.color = (0, 1, 0)
+#         self.dismiss()
+#
+#         # Changes shape color to green - Eric Avery
+#
+#     def selectGreen(self, btn):
+#         print("selectGreen()")
+#         self.parentScreen.color = (0, 0, 1)
+#         self.dismiss()
 
 '''
 RootManager() extends ScreenManager https://kivy.org/docs/api-kivy.uix.screenmanager.html
