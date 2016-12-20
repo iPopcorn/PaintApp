@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="4a64ae4c-8d1f-4bce-8a37-951af4f64773" name="Default" comment="Fixed drawing widgets and implemented color selection.">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/untitled.iml" afterPath="$PROJECT_DIR$/.idea/untitled.iml" />
+    <list default="true" id="4a64ae4c-8d1f-4bce-8a37-951af4f64773" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/PaintApp.kv" afterPath="$PROJECT_DIR$/PaintApp.kv" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/PaintApp.py" afterPath="$PROJECT_DIR$/PaintApp.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Popups.kv" afterPath="$PROJECT_DIR$/Popups.kv" />
     </list>
     <ignored path="untitled.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -29,11 +29,18 @@
       <file leaf-file-name="PaintApp.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/PaintApp.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.34549877">
-              <caret line="325" column="0" selection-start-line="325" selection-start-column="0" selection-end-line="325" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.9808">
+              <caret line="182" column="28" selection-start-line="182" selection-start-column="28" selection-end-line="182" selection-end-column="28" />
               <folding>
                 <element signature="e#0#24#0" expanded="true" />
-                <element signature="e#7814#7818#0" expanded="false" />
+                <element signature="e#387#628#1" expanded="false" />
+                <element signature="e#664#1474#0" expanded="false" />
+                <element signature="e#1476#1849#1" expanded="false" />
+                <element signature="e#1885#3633#0" expanded="false" />
+                <element signature="e#3669#5059#0" expanded="false" />
+                <element signature="e#5097#5651#0" expanded="false" />
+                <element signature="e#5653#5820#1" expanded="false" />
+                <element signature="e#13532#13536#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -43,7 +50,7 @@
         <entry file="file://$PROJECT_DIR$/PaintApp.kv">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="38" column="41" selection-start-line="38" selection-start-column="41" selection-end-line="38" selection-end-column="41" />
+              <caret line="37" column="34" selection-start-line="37" selection-start-column="34" selection-end-line="37" selection-end-column="34" />
               <folding />
             </state>
           </provider>
@@ -53,7 +60,7 @@
         <entry file="file://$PROJECT_DIR$/Popups.kv">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="17" column="35" selection-start-line="17" selection-start-column="35" selection-end-line="17" selection-end-column="35" />
+              <caret line="21" column="16" selection-start-line="21" selection-start-column="16" selection-end-line="21" selection-end-column="16" />
               <folding />
             </state>
           </provider>
@@ -95,7 +102,7 @@
     <option name="x" value="54" />
     <option name="y" value="-8" />
     <option name="width" value="1320" />
-    <option name="height" value="780" />
+    <option name="height" value="784" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -143,8 +150,8 @@
     <panes />
   </component>
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$USER_HOME$/AppData/Local/GitHub/PortableGit_63435a79518b44808827aa3194b76bea96231189/cmd/git.exe" />
-    <property name="settings.editor.selected.configurable" value="Errors" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../PROGRAMMING/Project Connexus/kivy" />
+    <property name="settings.editor.selected.configurable" value="vcs.Git" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
   </component>
   <component name="RecentsManager">
@@ -355,7 +362,13 @@
       <option name="project" value="LOCAL" />
       <updated>1478994296404</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Fixed drawing widgets and implemented color selection.">
+      <created>1479108475291</created>
+      <option name="number" value="00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1479108475291</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TodoView" selected-index="4">
@@ -368,26 +381,27 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="54" y="-8" width="1320" height="780" extended-state="0" />
+    <frame x="54" y="-8" width="1320" height="784" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.22236341" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3294964" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3271605" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32761088" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32253087" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32598424" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3271605" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3294964" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -425,7 +439,8 @@
     <MESSAGE value="Refactored and commented code. Inserted todo tags where code needs to be added.&#10;Added in color selection and shape selection. Working on button implementation." />
     <MESSAGE value="Final commit for iteration 2. All shape and color functions work if hardcoded in rootcanvas. Will complete all for iteration 3." />
     <MESSAGE value="ClearScreen works. Working on other tools." />
-    <option name="LAST_COMMIT_MESSAGE" value="ClearScreen works. Working on other tools." />
+    <MESSAGE value="Fixed drawing widgets and implemented color selection." />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed drawing widgets and implemented color selection." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -438,7 +453,82 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#0#24#0" expanded="true" />
-            <element signature="e#7814#7818#0" expanded="false" />
+            <element signature="e#387#628#1" expanded="false" />
+            <element signature="e#664#1474#0" expanded="false" />
+            <element signature="e#1476#1849#1" expanded="false" />
+            <element signature="e#1885#3633#0" expanded="false" />
+            <element signature="e#3669#5059#0" expanded="false" />
+            <element signature="e#5097#5651#0" expanded="false" />
+            <element signature="e#5653#5820#1" expanded="false" />
+            <element signature="e#13532#13536#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/PaintApp.kv">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="37" column="34" selection-start-line="37" selection-start-column="34" selection-end-line="37" selection-end-column="34" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Popups.kv">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="21" column="16" selection-start-line="21" selection-start-column="16" selection-end-line="21" selection-end-column="16" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/PaintApp.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#24#0" expanded="true" />
+            <element signature="e#387#628#1" expanded="false" />
+            <element signature="e#664#1474#0" expanded="false" />
+            <element signature="e#1476#1849#1" expanded="false" />
+            <element signature="e#1885#3633#0" expanded="false" />
+            <element signature="e#3669#5059#0" expanded="false" />
+            <element signature="e#5097#5651#0" expanded="false" />
+            <element signature="e#5653#5820#1" expanded="false" />
+            <element signature="e#13532#13536#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/PaintApp.kv">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="37" column="34" selection-start-line="37" selection-start-column="34" selection-end-line="37" selection-end-column="34" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Popups.kv">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="21" column="16" selection-start-line="21" selection-start-column="16" selection-end-line="21" selection-end-column="16" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/PaintApp.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#24#0" expanded="true" />
+            <element signature="e#387#628#1" expanded="false" />
+            <element signature="e#664#1474#0" expanded="false" />
+            <element signature="e#1476#1849#1" expanded="false" />
+            <element signature="e#1885#3633#0" expanded="false" />
+            <element signature="e#3669#5059#0" expanded="false" />
+            <element signature="e#5097#5651#0" expanded="false" />
+            <element signature="e#5653#5820#1" expanded="false" />
+            <element signature="e#13532#13536#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -465,7 +555,14 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#0#24#0" expanded="true" />
-            <element signature="e#7814#7818#0" expanded="false" />
+            <element signature="e#387#628#1" expanded="false" />
+            <element signature="e#664#1474#0" expanded="false" />
+            <element signature="e#1476#1849#1" expanded="false" />
+            <element signature="e#1885#3633#0" expanded="false" />
+            <element signature="e#3669#5059#0" expanded="false" />
+            <element signature="e#5097#5651#0" expanded="false" />
+            <element signature="e#5653#5820#1" expanded="false" />
+            <element signature="e#13532#13536#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -492,7 +589,116 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#0#24#0" expanded="true" />
-            <element signature="e#7814#7818#0" expanded="false" />
+            <element signature="e#387#628#1" expanded="false" />
+            <element signature="e#664#1474#0" expanded="false" />
+            <element signature="e#1476#1849#1" expanded="false" />
+            <element signature="e#1885#3633#0" expanded="false" />
+            <element signature="e#3669#5059#0" expanded="false" />
+            <element signature="e#5097#5651#0" expanded="false" />
+            <element signature="e#5653#5820#1" expanded="false" />
+            <element signature="e#13532#13536#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/PaintApp.kv">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="38" column="41" selection-start-line="38" selection-start-column="41" selection-end-line="38" selection-end-column="41" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Popups.kv">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="17" column="35" selection-start-line="17" selection-start-column="35" selection-end-line="17" selection-end-column="35" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/PaintApp.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#24#0" expanded="true" />
+            <element signature="e#387#628#1" expanded="false" />
+            <element signature="e#664#1474#0" expanded="false" />
+            <element signature="e#1476#1849#1" expanded="false" />
+            <element signature="e#1885#3633#0" expanded="false" />
+            <element signature="e#3669#5059#0" expanded="false" />
+            <element signature="e#5097#5651#0" expanded="false" />
+            <element signature="e#5653#5820#1" expanded="false" />
+            <element signature="e#13532#13536#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/PaintApp.kv">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="38" column="41" selection-start-line="38" selection-start-column="41" selection-end-line="38" selection-end-column="41" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Popups.kv">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="17" column="35" selection-start-line="17" selection-start-column="35" selection-end-line="17" selection-end-column="35" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/PaintApp.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#24#0" expanded="true" />
+            <element signature="e#387#628#1" expanded="false" />
+            <element signature="e#664#1474#0" expanded="false" />
+            <element signature="e#1476#1849#1" expanded="false" />
+            <element signature="e#1885#3633#0" expanded="false" />
+            <element signature="e#3669#5059#0" expanded="false" />
+            <element signature="e#5097#5651#0" expanded="false" />
+            <element signature="e#5653#5820#1" expanded="false" />
+            <element signature="e#13532#13536#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/PaintApp.kv">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="38" column="41" selection-start-line="38" selection-start-column="41" selection-end-line="38" selection-end-column="41" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Popups.kv">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="17" column="35" selection-start-line="17" selection-start-column="35" selection-end-line="17" selection-end-column="35" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/PaintApp.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#24#0" expanded="true" />
+            <element signature="e#387#628#1" expanded="false" />
+            <element signature="e#664#1474#0" expanded="false" />
+            <element signature="e#1476#1849#1" expanded="false" />
+            <element signature="e#1885#3633#0" expanded="false" />
+            <element signature="e#3669#5059#0" expanded="false" />
+            <element signature="e#5097#5651#0" expanded="false" />
+            <element signature="e#5653#5820#1" expanded="false" />
+            <element signature="e#13532#13536#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -519,7 +725,14 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#0#24#0" expanded="true" />
-            <element signature="e#7814#7818#0" expanded="false" />
+            <element signature="e#387#628#1" expanded="false" />
+            <element signature="e#664#1474#0" expanded="false" />
+            <element signature="e#1476#1849#1" expanded="false" />
+            <element signature="e#1885#3633#0" expanded="false" />
+            <element signature="e#3669#5059#0" expanded="false" />
+            <element signature="e#5097#5651#0" expanded="false" />
+            <element signature="e#5653#5820#1" expanded="false" />
+            <element signature="e#13532#13536#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -546,7 +759,14 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#0#24#0" expanded="true" />
-            <element signature="e#7814#7818#0" expanded="false" />
+            <element signature="e#387#628#1" expanded="false" />
+            <element signature="e#664#1474#0" expanded="false" />
+            <element signature="e#1476#1849#1" expanded="false" />
+            <element signature="e#1885#3633#0" expanded="false" />
+            <element signature="e#3669#5059#0" expanded="false" />
+            <element signature="e#5097#5651#0" expanded="false" />
+            <element signature="e#5653#5820#1" expanded="false" />
+            <element signature="e#13532#13536#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -573,7 +793,14 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#0#24#0" expanded="true" />
-            <element signature="e#7814#7818#0" expanded="false" />
+            <element signature="e#387#628#1" expanded="false" />
+            <element signature="e#664#1474#0" expanded="false" />
+            <element signature="e#1476#1849#1" expanded="false" />
+            <element signature="e#1885#3633#0" expanded="false" />
+            <element signature="e#3669#5059#0" expanded="false" />
+            <element signature="e#5097#5651#0" expanded="false" />
+            <element signature="e#5653#5820#1" expanded="false" />
+            <element signature="e#13532#13536#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -600,7 +827,14 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#0#24#0" expanded="true" />
-            <element signature="e#7814#7818#0" expanded="false" />
+            <element signature="e#387#628#1" expanded="false" />
+            <element signature="e#664#1474#0" expanded="false" />
+            <element signature="e#1476#1849#1" expanded="false" />
+            <element signature="e#1885#3633#0" expanded="false" />
+            <element signature="e#3669#5059#0" expanded="false" />
+            <element signature="e#5097#5651#0" expanded="false" />
+            <element signature="e#5653#5820#1" expanded="false" />
+            <element signature="e#13532#13536#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -627,7 +861,14 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#0#24#0" expanded="true" />
-            <element signature="e#7814#7818#0" expanded="false" />
+            <element signature="e#387#628#1" expanded="false" />
+            <element signature="e#664#1474#0" expanded="false" />
+            <element signature="e#1476#1849#1" expanded="false" />
+            <element signature="e#1885#3633#0" expanded="false" />
+            <element signature="e#3669#5059#0" expanded="false" />
+            <element signature="e#5097#5651#0" expanded="false" />
+            <element signature="e#5653#5820#1" expanded="false" />
+            <element signature="e#13532#13536#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -654,7 +895,14 @@
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="e#0#24#0" expanded="true" />
-            <element signature="e#7814#7818#0" expanded="false" />
+            <element signature="e#387#628#1" expanded="false" />
+            <element signature="e#664#1474#0" expanded="false" />
+            <element signature="e#1476#1849#1" expanded="false" />
+            <element signature="e#1885#3633#0" expanded="false" />
+            <element signature="e#3669#5059#0" expanded="false" />
+            <element signature="e#5097#5651#0" expanded="false" />
+            <element signature="e#5653#5820#1" expanded="false" />
+            <element signature="e#13532#13536#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -673,7 +921,14 @@
           <caret line="26" column="35" selection-start-line="26" selection-start-column="35" selection-end-line="26" selection-end-column="35" />
           <folding>
             <element signature="e#0#24#0" expanded="true" />
-            <element signature="e#7814#7818#0" expanded="false" />
+            <element signature="e#387#628#1" expanded="false" />
+            <element signature="e#664#1474#0" expanded="false" />
+            <element signature="e#1476#1849#1" expanded="false" />
+            <element signature="e#1885#3633#0" expanded="false" />
+            <element signature="e#3669#5059#0" expanded="false" />
+            <element signature="e#5097#5651#0" expanded="false" />
+            <element signature="e#5653#5820#1" expanded="false" />
+            <element signature="e#13532#13536#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -692,7 +947,14 @@
           <caret line="26" column="35" selection-start-line="26" selection-start-column="35" selection-end-line="26" selection-end-column="35" />
           <folding>
             <element signature="e#0#24#0" expanded="true" />
-            <element signature="e#7814#7818#0" expanded="false" />
+            <element signature="e#387#628#1" expanded="false" />
+            <element signature="e#664#1474#0" expanded="false" />
+            <element signature="e#1476#1849#1" expanded="false" />
+            <element signature="e#1885#3633#0" expanded="false" />
+            <element signature="e#3669#5059#0" expanded="false" />
+            <element signature="e#5097#5651#0" expanded="false" />
+            <element signature="e#5653#5820#1" expanded="false" />
+            <element signature="e#13532#13536#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -708,29 +970,36 @@
     <entry file="file://$USER_HOME$/Google Drive/ProjectConnexus/APP/Workspace/kivy/mainmenu.kv" />
     <entry file="file://$USER_HOME$/Google Drive/ProjectConnexus/APP/Workspace/kivy/friendlist.kv" />
     <entry file="file://$USER_HOME$/Google Drive/School/Project Management/Iteration1_Taylor_Petrillo_1000770610/PaintProject/Source/PaintApp.py" />
-    <entry file="file://$PROJECT_DIR$/PaintApp.kv">
+    <entry file="file://$PROJECT_DIR$/Popups.kv">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="38" column="41" selection-start-line="38" selection-start-column="41" selection-end-line="38" selection-end-column="41" />
+          <caret line="21" column="16" selection-start-line="21" selection-start-column="16" selection-end-line="21" selection-end-column="16" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Popups.kv">
+    <entry file="file://$PROJECT_DIR$/PaintApp.kv">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="17" column="35" selection-start-line="17" selection-start-column="35" selection-end-line="17" selection-end-column="35" />
+          <caret line="37" column="34" selection-start-line="37" selection-start-column="34" selection-end-line="37" selection-end-column="34" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/PaintApp.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.34549877">
-          <caret line="325" column="0" selection-start-line="325" selection-start-column="0" selection-end-line="325" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.9808">
+          <caret line="182" column="28" selection-start-line="182" selection-start-column="28" selection-end-line="182" selection-end-column="28" />
           <folding>
             <element signature="e#0#24#0" expanded="true" />
-            <element signature="e#7814#7818#0" expanded="false" />
+            <element signature="e#387#628#1" expanded="false" />
+            <element signature="e#664#1474#0" expanded="false" />
+            <element signature="e#1476#1849#1" expanded="false" />
+            <element signature="e#1885#3633#0" expanded="false" />
+            <element signature="e#3669#5059#0" expanded="false" />
+            <element signature="e#5097#5651#0" expanded="false" />
+            <element signature="e#5653#5820#1" expanded="false" />
+            <element signature="e#13532#13536#0" expanded="false" />
           </folding>
         </state>
       </provider>

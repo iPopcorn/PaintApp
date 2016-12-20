@@ -88,6 +88,40 @@ class ColorSelectPopup(Popup):
                                    self.blueSlider.value_normalized)
         self.dismiss()
 
+class SizeSelectPopup(Popup):
+    def __init__(self, parentScreen, **kwargs):
+        super(SizeSelectPopup, self).__init__(**kwargs)
+        self.parentScreen = parentScreen
+
+        myLayout = self.ids.sizeLayout
+
+        # create sliders and labels
+        self.thicknessLabel = Label(text="Thickness")
+        self.thicknessSlider = Slider(min=1,max=10,value=1)
+        self.radiusLabel = Label(text="Radius")
+        self.radiusSlider = Slider(min=10, max=150, value=10)
+
+        # create Buttons, bind callbacks, and add them to a sub-layout
+        self.btnLayout = BoxLayout(orientation='horizontal',spacing=self.height * 0.05)
+        self.applyButton = Button(text='Apply')
+        self.cancelButton = Button(text='Cancel')
+        self.applyButton.bind(on_release=self.applyCallback)
+        self.cancelButton.bind(on_release=self.dismiss)
+        self.btnLayout.add_widget(self.applyButton)
+        self.btnLayout.add_widget(self.cancelButton)
+
+        # add everything to layout
+        myLayout.add_widget(self.thicknessLabel)
+        myLayout.add_widget(self.thicknessSlider)
+        myLayout.add_widget(self.radiusLabel)
+        myLayout.add_widget(self.radiusSlider)
+        myLayout.add_widget(self.btnLayout)
+
+    def applyCallback(self, button):
+        print("SizeSelectPopup.applyCallback()")
+        self.parentScreen.setSize(self.thicknessSlider.value, self.radiusSlider.value)
+        self.dismiss()
+
 
 
 
@@ -100,6 +134,10 @@ class ToolbarButton(Button):
         print("shapeSelectCallback()")
         shapePopup = ShapeSelectPopup()
         shapePopup.open()
+    def sizeSelectCallback(self):
+        print("sizeSelectCallback()")
+        sizePopup = SizeSelectPopup()
+        sizePopup.open()
     def clearScreenCallback(self):
         print("clearScreenCallback()")
     def undoToolCallback(self):
@@ -116,12 +154,14 @@ class DrawingWidget(Widget):
     resetTouch = False
     radius = 125
     thickness = 3
+    shapeStack = []
 
-    def __init__(self, **kwargs):
+    def __init__(self, shapeStack, color, **kwargs):
         super(DrawingWidget, self).__init__(*kwargs)
         #initialize drawing widget to draw circles.
         self.curShape = "circle"
-        self.color = (0,0,1) #color is a tuple that represents R,G,B, set the default color to Blue
+        self.color = color #color is a tuple that represents R,G,B, set the default color to Blue
+        self.shapeStack = shapeStack
 
     def on_touch_down(self, touch):
         #keep track of current and previous touches
@@ -135,6 +175,8 @@ class DrawingWidget(Widget):
             with self.canvas:
                 Color(*self.color)
                 Line(circle=(touch.x, touch.y, self.radius), width=self.thickness)
+                shapeDict = {'Shape': "circle", 'Thickness': self.thickness, 'Radius': self.radius, "Touch1": self.curTouch, "Touch2": None}
+                self.shapeStack.append(shapeDict)
         elif self.curShape == "square":
             #self.color = (0,1,0)
             with self.canvas:
@@ -147,17 +189,25 @@ class DrawingWidget(Widget):
                              self.curTouch.x + size, self.curTouch.y + size,), # top right
                      width=self.thickness,
                      close=True)
+                shapeDict = {'Shape': "square", 'Thickness': self.thickness, 'Radius': self.radius, "Touch1": self.curTouch, "Touch2": None}
+                self.shapeStack.append(shapeDict)
         elif self.curShape == "line":
             if self.prevTouch is None: # if this is the first tap, draw a dot
                 with self.canvas:
-                    Color(*self.color)
+                    Color(0,0,0)
                     Line(circle=(self.curTouch.x, self.curTouch.y, 1))
             else: # else draw a line from the prev to the cur
                 with self.canvas:
                     Color(*self.color)
-                    Line(points=(self.prevTouch.x, self.prevTouch.y, self.curTouch.x, self.curTouch.y),width=self.thickness/2)
+                    Line(points=(self.prevTouch.x, self.prevTouch.y, self.curTouch.x, self.curTouch.y),width=self.thickness)
                     self.resetTouch = True
+                    shapeDict = {'Shape': "line", 'Thickness': self.thickness, 'Radius': self.radius, "Touch1": self.prevTouch, "Touch2": self.curTouch}
+                    self.shapeStack.append(shapeDict)
 
+    def getColor(self):
+        return self.color
+    def getShapeStack(self):
+        return self.shapeStack
     # each draw function changes this widget's curShape string
     def drawCircle(self):
         self.curShape = "circle"
@@ -171,6 +221,77 @@ class DrawingWidget(Widget):
     # setColor takes 3 ints and updates this widget's color tuple
     def setColor(self, red, green, blue):
         self.color = (red, green, blue)
+
+    # setColor takes 2 ints, thickness and radius
+    def setSize(self, thickness, radius):
+        self.radius = radius
+        self.thickness = thickness
+
+    def getPrevTouch(self):
+        return self.prevTouch
+
+    # undoCallback returns the last shape drawn
+    def undoCallback(self):
+        return self.shapeStack.pop()
+
+    def drawShape(self, lastShape):
+            if lastShape['Shape'] == 'circle':
+                with self.canvas:
+                    Color(*self.color)
+                    Line(circle=(lastShape['Touch1'].x, lastShape['Touch1'].y, lastShape['Radius']), width=lastShape['Thickness'])
+            elif lastShape['Shape'] == 'square':
+                with self.canvas:
+                    Color(*self.color)
+                    size = lastShape['Radius']
+                    curTouch = lastShape['Touch1']
+                    # Rectangle(pos=(touch.x, touch.y), size=(75, 75))
+                    Line(points=(curTouch.x - size, curTouch.y + size, # top left
+                                 curTouch.x - size, curTouch.y - size, # bot left
+                                 curTouch.x + size, curTouch.y - size, # bot right
+                                 curTouch.x + size, curTouch.y + size,), # top right
+                         width=lastShape['Thickness'],
+                         close=True)
+            elif lastShape['Shape'] == 'line':
+                with self.canvas:
+                    Color(*self.color)
+                    prevTouch = lastShape['Touch1']
+                    curTouch = lastShape['Touch2']
+                    Line(points=(prevTouch.x, prevTouch.y, curTouch.x, curTouch.y),width=lastShape['Thickness'])
+    def undoDraw(self):
+        if len(self.shapeStack) == 0: #if there are no shapes, do nothing
+            pass
+        else:
+            self.shapeStack.pop()
+            for shape in self.shapeStack:
+                self.drawShape(shape)
+
+        # lastShape = None
+        # if len(self.shapeStack) > 0:
+        #     lastShape = self.shapeStack.pop()
+        # if lastShape is not None:
+        #     if lastShape['Shape'] == 'circle':
+        #         with self.canvas:
+        #             Color(0,0,0)
+        #             Line(circle=(lastShape['Touch1'].x, lastShape['Touch1'].y, lastShape['Radius']), width=lastShape['Thickness'])
+        #     elif lastShape['Shape'] == 'square':
+        #         with self.canvas:
+        #             Color(0,0,0)
+        #             size = lastShape['Radius']
+        #             curTouch = lastShape['Touch1']
+        #             # Rectangle(pos=(touch.x, touch.y), size=(75, 75))
+        #             Line(points=(curTouch.x - size, curTouch.y + size, # top left
+        #                          curTouch.x - size, curTouch.y - size, # bot left
+        #                          curTouch.x + size, curTouch.y - size, # bot right
+        #                          curTouch.x + size, curTouch.y + size,), # top right
+        #                  width=lastShape['Thickness'],
+        #                  close=True)
+        #     elif lastShape['Shape'] == 'line':
+        #         with self.canvas:
+        #             Color(0,0,0)
+        #             prevTouch = lastShape['Touch1']
+        #             curTouch = lastShape['Touch2']
+        #             Line(points=(prevTouch.x, prevTouch.y, curTouch.x, curTouch.y),width=lastShape['Thickness'])
+
 
 # # Circle draw function - Eric Avery
 # class CircleDraw(Widget):
@@ -213,14 +334,16 @@ but I think it would be easiest to create new drawing widgets with new settings 
 '''
 class RootCanvas(Widget):
     def __init__(self, **kwargs):
-        super(RootCanvas, self).__init__(**kwargs);
-        #self.currentDrawingWidget = CircleDraw();
-        self.currentDrawingWidget = DrawingWidget();
-        self.ids.canvasLayout.add_widget(self.currentDrawingWidget);
+        super(RootCanvas, self).__init__(**kwargs)
+        #self.currentDrawingWidget = CircleDraw()
+        self.canvasShapeStack = []
+        defaultColor = (0,0,1)
+        self.currentDrawingWidget = DrawingWidget(self.canvasShapeStack, defaultColor)
+        self.ids.canvasLayout.add_widget(self.currentDrawingWidget)
 
     # return the current drawing widget. - Eric Avery
     def getCurDrawingWidget(self):
-        return self.currentDrawingWidget;
+        return self.currentDrawingWidget
 
     # # change the drawing widget methodology - Eric Avery
     # def setCurDrawingWidget(self, mystring):
@@ -239,10 +362,23 @@ class RootCanvas(Widget):
     #     return self.currentDrawingWidget
 
     #clear screen methodology - Eric Avery
-    def clearWidgets(self):
-        self.ids.canvasLayout.remove_widget(self.currentDrawingWidget)
-        self.currentDrawingWidget = DrawingWidget()
-        self.ids.canvasLayout.add_widget(self.currentDrawingWidget)
+    def clearWidgets(self, freshWidgetBoolean):
+        if freshWidgetBoolean:
+            self.canvasShapeStack = []
+            currentColor = self.currentDrawingWidget.getColor()
+            self.ids.canvasLayout.remove_widget(self.currentDrawingWidget)
+            self.currentDrawingWidget = DrawingWidget(self.canvasShapeStack, currentColor)
+            self.ids.canvasLayout.add_widget(self.currentDrawingWidget)
+        else:
+            self.canvasShapeStack = self.currentDrawingWidget.getShapeStack()
+            currentColor = self.currentDrawingWidget.getColor()
+            self.ids.canvasLayout.remove_widget(self.currentDrawingWidget)
+            self.currentDrawingWidget = DrawingWidget(self.canvasShapeStack, currentColor)
+            self.ids.canvasLayout.add_widget(self.currentDrawingWidget)
+
+    def undo(self):
+        self.clearWidgets(False)
+        self.currentDrawingWidget.undoDraw()
 
 
 '''
@@ -259,6 +395,7 @@ class RootScreen(Screen):
         # create popups
         self.colorSelectPopup = ColorSelectPopup(self)
         self.shapeSelectPopup = ShapeSelectPopup(self)
+        self.sizeSelectPopup = SizeSelectPopup(self)
 
         # create root canvas and toolbar objects
         self.rootCanvas = RootCanvas()
@@ -274,6 +411,8 @@ class RootScreen(Screen):
         colorBtn.bind(on_release=self.openColorPopup)
         shapeBtn = toolbar.ids.shapeBtn
         shapeBtn.bind(on_release=self.openShapePopup)
+        sizeBtn = toolbar.ids.sizeBtn
+        sizeBtn.bind(on_release=self.openSizePopup)
         clearBtn = toolbar.ids.clearBtn
         clearBtn.bind(on_release=self.clearScreen)
         undoBtn = toolbar.ids.undoBtn
@@ -282,6 +421,10 @@ class RootScreen(Screen):
         # add root canvas and toolbar objects to layout
         rootLayout.add_widget(self.rootCanvas)
         rootLayout.add_widget(toolbar)
+
+    def openSizePopup(self, button):
+        print("openSizePopup()")
+        self.sizeSelectPopup.open()
 
     def openColorPopup(self, button):
         print("openColorPopup()")
@@ -294,11 +437,13 @@ class RootScreen(Screen):
     #COMPLETED. Resets drawing widget to circle by default - Eric Avery
     def clearScreen(self, button):
         print("clearScreen()")
-        self.rootCanvas.clearWidgets()
+        self.rootCanvas.clearWidgets(True)
 
     def undoCallback(self, button):
         print("undoCallback()")
         # TODO: Implement undo logic
+        # get last drawn shape
+        self.rootCanvas.undo()
 
     #all three shape selectors work - Eric Avery
     def selectSquare(self, btn):
@@ -321,6 +466,9 @@ class RootScreen(Screen):
 
     def setColor(self, redVal, greenVal, blueVal):
         self.rootCanvas.currentDrawingWidget.setColor(redVal, greenVal, blueVal)
+
+    def setSize(self, thickness, radius):
+        self.rootCanvas.currentDrawingWidget.setSize(thickness, radius)
 
 
 
