@@ -11,6 +11,9 @@ from kivy.uix.popup import Popup
 from kivy.uix.label import Label
 from kivy.uix.slider import Slider
 
+import math
+import numpy as np
+
 Builder.load_file('PaintApp.kv')
 
 '''
@@ -169,14 +172,37 @@ class DrawingWidget(Widget):
         #keep track of current and previous touches
         self.prevTouch = self.curTouch
         self.curTouch = touch
+
         if self.resetTouch: #if reset flag raised, then set the previous touch to none
             self.prevTouch = None
             self.resetTouch = False
 
         if self.curShape == "circle":
+            useAdjustment = False
+            if len(self.shapeStack) > 0:
+                useAdjustment = True
+                point = {
+                    'x': self.curTouch.x,
+                    'y': self.curTouch.y
+                }
+                circle = {
+                    'radius': self.shapeStack[0]['Radius'],  # todo: remove hardcoded shape reference
+                    'x': self.shapeStack[0]['Touch1'].x,
+                    'y': self.shapeStack[0]['Touch1'].y
+                }
+                adjustedPoint = self.adjustPoint(point, circle)
+                # print('Our adjusted point is: ' + str(adjustedPoint))
             with self.canvas:
                 Color(*self.color)
-                Line(circle=(touch.x, touch.y, self.radius), width=self.thickness)
+
+                if useAdjustment:
+                    x = adjustedPoint[0]
+                    y = adjustedPoint[1]
+                    Line(circle=(adjustedPoint[0], adjustedPoint[1], self.radius), width=self.thickness)
+                else:
+                    Line(circle=(touch.x, touch.y, self.radius), width=self.thickness)
+
+                # todo: make this dictionary save the adjusted point somehow
                 shapeDict = {'Shape': "circle", 'Thickness': self.thickness, 'Radius': self.radius, "Touch1": self.curTouch, "Touch2": None}
                 self.shapeStack.append(shapeDict)
         elif self.curShape == "square":
@@ -205,6 +231,25 @@ class DrawingWidget(Widget):
                     self.resetTouch = True
                     shapeDict = {'Shape': "line", 'Thickness': self.thickness, 'Radius': self.radius, "Touch1": self.prevTouch, "Touch2": self.curTouch}
                     self.shapeStack.append(shapeDict)
+
+    def adjustPoint(self, givenPoint, circle):
+        """
+        adjustPoint() takes a point and a circle, and returns a new point that is on the circle.
+        givenPoint: givenPoint is a dict with keys = ['x', 'y']
+        circle: circle is a dict with keys = ['radius', 'x', 'y']
+        :return:
+        """
+        center = np.array([circle['x'],
+                           circle['y']])
+
+        givenVector = np.array([givenPoint['y'],
+                                givenPoint['y']])
+
+        startingVector = center - givenVector
+        normalizedVector = startingVector / np.linalg.norm(startingVector)
+
+        finalVector = center + (circle['radius'] * normalizedVector)
+        return finalVector
 
     def getColor(self):
         return self.color
@@ -259,6 +304,7 @@ class DrawingWidget(Widget):
                     prevTouch = lastShape['Touch1']
                     curTouch = lastShape['Touch2']
                     Line(points=(prevTouch.x, prevTouch.y, curTouch.x, curTouch.y),width=lastShape['Thickness'])
+
     def undoDraw(self):
         if len(self.shapeStack) == 0: #if there are no shapes, do nothing
             pass
