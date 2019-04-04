@@ -242,10 +242,10 @@ class DrawingWidget(Widget):
         center = np.array([circle['x'],
                            circle['y']])
 
-        givenVector = np.array([givenPoint['y'],
+        givenVector = np.array([givenPoint['x'],
                                 givenPoint['y']])
 
-        startingVector = center - givenVector
+        startingVector = givenVector - center
         normalizedVector = startingVector / np.linalg.norm(startingVector)
 
         finalVector = center + (circle['radius'] * normalizedVector)
