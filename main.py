@@ -160,6 +160,7 @@ class DrawingWidget(Widget):
     radius = 125
     thickness = 3
     shapeStack = []
+    rootCircle = {}
 
     def __init__(self, shapeStack, color, **kwargs):
         super(DrawingWidget, self).__init__(*kwargs)
@@ -180,17 +181,25 @@ class DrawingWidget(Widget):
         if self.curShape == "circle":
             useAdjustment = False
             if len(self.shapeStack) > 0:
+                if len(self.shapeStack) > 1:
+                    point = {
+                        'x': self.curTouch.x,
+                        'y': self.curTouch.y
+                    }
+
+                    self.findIntersections(point, self.rootCircle)
+                    pass
                 useAdjustment = True
                 point = {
                     'x': self.curTouch.x,
                     'y': self.curTouch.y
                 }
-                circle = {
+                self.rootCircle = {
                     'radius': self.shapeStack[0]['Radius'],  # todo: remove hardcoded shape reference
                     'x': self.shapeStack[0]['Touch1'].x,
                     'y': self.shapeStack[0]['Touch1'].y
                 }
-                adjustedPoint = self.adjustPoint(point, circle)
+                adjustedPoint = self.adjustPoint(point, self.rootCircle)
                 # print('Our adjusted point is: ' + str(adjustedPoint))
             with self.canvas:
                 Color(*self.color)
@@ -232,6 +241,39 @@ class DrawingWidget(Widget):
                     shapeDict = {'Shape': "line", 'Thickness': self.thickness, 'Radius': self.radius, "Touch1": self.prevTouch, "Touch2": self.curTouch}
                     self.shapeStack.append(shapeDict)
 
+    def findIntersections(self, givenPoint, circle):
+        """
+        findIntersections() takes a point and a circle, and returns 2 points that are the intersections of the circles
+        created by the 2 given points.
+        :param givenPoint: dict with keys = ['x', 'y']
+        :param circle: dict with keys = ['radius', 'x', 'y']
+        :return: list of dicts with keys = ['x', 'y']
+        """
+        r = circle['radius']
+        x = r / 2
+        y = math.sqrt((r * r) - (x * x))
+        p1 = {
+            'x': x,
+            'y': y
+        }
+        p2 = {
+            'x': x,
+            'y': -y
+        }
+        p3 = {
+            'x': -x,
+            'y': y
+        }
+        p4 = {
+            'x': -x,
+            'y': -y
+        }
+        p5 = {
+            'x': givenPoint['x'],
+            'y': givenPoint['y']
+        }
+        pass
+
     def adjustPoint(self, givenPoint, circle):
         """
         adjustPoint() takes a point and a circle, and returns a new point that is on the circle.
@@ -242,10 +284,10 @@ class DrawingWidget(Widget):
         center = np.array([circle['x'],
                            circle['y']])
 
-        givenVector = np.array([givenPoint['y'],
+        givenVector = np.array([givenPoint['x'],
                                 givenPoint['y']])
 
-        startingVector = center - givenVector
+        startingVector = givenVector - center
         normalizedVector = startingVector / np.linalg.norm(startingVector)
 
         finalVector = center + (circle['radius'] * normalizedVector)
