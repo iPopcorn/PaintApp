@@ -207,7 +207,7 @@ class DrawingWidget(Widget):
 
                 if useAdjustment:
                     Line(circle=(adjustedPoint[0], adjustedPoint[1], self.radius), width=self.thickness)
-                    Line(circle=(thirdCenter['x'], thirdCenter['y'], self.radius), width=self.thickness)
+                    Line(circle=(thirdCenter[0], thirdCenter[1], self.radius), width=self.thickness)
                 else:
                     Line(circle=(touch.x, touch.y, self.radius), width=self.thickness)
 
@@ -242,35 +242,49 @@ class DrawingWidget(Widget):
                     shapeDict = {'Shape': "line", 'Thickness': self.thickness, 'Radius': self.radius, "Touch1": self.prevTouch, "Touch2": self.curTouch}
                     self.shapeStack.append(shapeDict)
 
-    def findIntersections(self, givenVector, circle):
+    def findIntersections(self, centerTwo, circle):
         """
         findIntersections() takes a point and a circle, and returns 2 points that are the intersections of the circles
         created by the 2 given points.
-        :param givenVector: Represents the vector between the center points of the first 2 circles.
+        :param centerTwo: Represents the vector between the center points of the first 2 circles.
         dict with keys = ['x', 'y']
         :param circle: dict with keys = ['radius', 'x', 'y']
         :return: list of dicts with keys = ['x', 'y']
         """
+        """
+        The starting point for aVector will be the center of the circle (circle[x and y]).
+        The magnitude of aVector will be half the radius.
+        The direction of aVector will be from centerOne to centerTwo.
+        
+        The starting point for bVector will be the ending point for aVector.
+        The magnitude of bVector can be calculated
+        The direction of bVector will be perpendicular to the direction of aVector
+        
+        The starting 
+        """
         r = circle['radius']
+        centerOne = np.array([
+            circle['x'],
+            circle['y']
+        ])
+        magnitudeA = r / 2
+        magnitudeB = (math.sqrt(3) / 2) * r  # sin(60 degrees) * hypotenuse
 
-        yMagnitude = (math.sqrt(3) / 2) * r  # sin(60 degrees) * hypotenuse
-        aVector = np.array([
-            givenVector[0] / 2,
-            givenVector[1]
+        aVector_direction = centerOne - centerTwo
+        aVector_unit = aVector_direction / np.linalg.norm(aVector_direction)
+        aVector_final = centerOne + (aVector_unit * magnitudeA)
+
+        b1 = 1
+        b2 = -aVector_final[0] / aVector_final[1]
+        bVector_initial = np.array([
+            b1,
+            b2
         ])
 
-        bVector = np.array([
-            givenVector[0] / 2,
-            givenVector[1] + yMagnitude
-        ])
+        bVector_unit = bVector_initial / np.linalg.norm(bVector_initial)
+        bVector_final = aVector_final + (magnitudeB * bVector_unit)
 
-        cVector = aVector + bVector
-
-        p1 = {
-            'x': cVector[0],
-            'y': cVector[1]
-        }
-        return p1
+        return bVector_final
 
     def adjustPoint(self, givenPoint, circle):
         """
