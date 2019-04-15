@@ -169,6 +169,20 @@ class DrawingWidget(Widget):
         self.color = color #color is a tuple that represents R,G,B, set the default color to Blue
         self.shapeStack = shapeStack
 
+    def drawVector(self, vectorOne, vectorTwo, color):
+        """
+        Draws a line between the 2 given points
+        :param vectorOne: numpy array, represents the start of the line
+        :param vectorTwo: numpy array, represents the end of the line
+        :param color: tuple, represents R, G, B color value
+        :return: None
+        """
+        # Draw Vector
+        with self.canvas:
+            Color(*color)
+            Line(points=(vectorOne[0], vectorOne[1], vectorTwo[0], vectorTwo[1]),
+                 width=self.thickness)
+
     def on_touch_down(self, touch):
         #keep track of current and previous touches
         self.prevTouch = self.curTouch
@@ -207,7 +221,10 @@ class DrawingWidget(Widget):
 
                 if useAdjustment:
                     Line(circle=(adjustedPoint[0], adjustedPoint[1], self.radius), width=self.thickness)
-                    Line(circle=(thirdCenter[0], thirdCenter[1], self.radius), width=self.thickness)
+                    # Color(*(0, 1, 0))
+                    # Line(points=(self.rootCircle['x'], self.rootCircle['y'], adjustedPoint[0], adjustedPoint[1]),
+                    #      width=self.thickness)
+                    # Line(circle=(thirdCenter[0], thirdCenter[1], self.radius), width=self.thickness)
                 else:
                     Line(circle=(touch.x, touch.y, self.radius), width=self.thickness)
 
@@ -246,8 +263,7 @@ class DrawingWidget(Widget):
         """
         findIntersections() takes a point and a circle, and returns 2 points that are the intersections of the circles
         created by the 2 given points.
-        :param centerTwo: Represents the vector between the center points of the first 2 circles.
-        dict with keys = ['x', 'y']
+        :param centerTwo: numpy array. Represents the center of the 2nd circle.
         :param circle: dict with keys = ['radius', 'x', 'y']
         :return: list of dicts with keys = ['x', 'y']
         """
@@ -262,27 +278,52 @@ class DrawingWidget(Widget):
         
         The starting 
         """
+        colorRed = (1, 0, 0)
+        colorBlue = (0, 0, 1)
+        colorGreen = (0, 1, 0)
+        colorPurple = (1, 0, 0.75)
+
         r = circle['radius']
         centerOne = np.array([
             circle['x'],
             circle['y']
         ])
         magnitudeA = r / 2
-        magnitudeB = (math.sqrt(3) / 2) * r  # sin(60 degrees) * hypotenuse
+        magnitudeB = magnitudeA * math.sqrt(3)
+        # magnitudeB = (math.sqrt(3) / 2) * r  # sin(60 degrees) * hypotenuse
 
         aVector_direction = centerOne - centerTwo
         aVector_unit = aVector_direction / np.linalg.norm(aVector_direction)
-        aVector_final = centerOne + (aVector_unit * magnitudeA)
+        aVector_final = centerOne - (aVector_unit * magnitudeA)
 
-        b1 = 1
-        b2 = -aVector_final[0] / aVector_final[1]
+
+
+        # https://gamedev.stackexchange.com/questions/70075/how-can-i-find-the-perpendicular-to-a-2d-vector
         bVector_initial = np.array([
-            b1,
-            b2
+            -aVector_final[1],
+            aVector_final[0]
         ])
 
+        sanityCheck = np.dot(aVector_final, bVector_initial)
+        print("aVector dot bVector_initial should be 0: " + str(sanityCheck))
+
         bVector_unit = bVector_initial / np.linalg.norm(bVector_initial)
+
+        sanityCheck = np.dot(aVector_final, bVector_unit)
+        print("aVector dot bVector_unit should be 0: " + str(sanityCheck))
+
         bVector_final = aVector_final + (magnitudeB * bVector_unit)
+        # finalVector = aVector_final + bVector_final
+
+        sanityCheck = np.dot(aVector_final, bVector_final)
+        print("aVector dot bVector_final should be 0: " + str(sanityCheck))
+
+        # Draw Vector
+        self.drawVector(centerOne, aVector_final, colorPurple)
+        self.drawVector(bVector_initial, aVector_final, colorGreen)
+        self.drawVector(bVector_unit, aVector_final, colorRed)
+        self.drawVector(bVector_final, aVector_final, colorBlue)
+
 
         return bVector_final
 
