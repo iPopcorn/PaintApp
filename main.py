@@ -127,9 +127,6 @@ class SizeSelectPopup(Popup):
         self.parentScreen.setSize(self.thicknessSlider.value, self.radiusSlider.value)
         self.dismiss()
 
-
-
-
 class ToolbarButton(Button):
     def colorSelectCallback(self):
         print("colorSelectCallback()")
