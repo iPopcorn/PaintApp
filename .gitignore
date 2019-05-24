@@ -1,4 +1,7 @@
-#PyCharm
+# Python cache
+**/__pycache__/
+
+# PyCharm
 .idea/*
 venv/*
 
