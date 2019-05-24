@@ -16,34 +16,6 @@ import numpy as np
 
 Builder.load_file('PaintApp.kv')
 
-'''
-ShapeSelectPopup() extends Kivy's popup class https://kivy.org/docs/api-kivy.uix.popup.html
-This class contains 3 buttons, when the user taps a button, the popup should close, and the app should
-draw whatever shape the user selected.
-'''
-class ShapeSelectPopup(Popup):
-    def __init__(self, parentscreen, **kwargs):
-        super(ShapeSelectPopup, self).__init__(**kwargs)
-        # local variable for storing the parent screen of this popup
-        self.parentScreen = parentscreen
-
-        # link the layout object
-        myLayout = self.ids.shapeLayout
-
-        # create button objects
-        squareBtn = Button(text='Square')
-        circleBtn = Button(text='Circle')
-        lineBtn = Button(text='Line')
-
-        # bind to callbacks
-        squareBtn.bind(on_release=self.parentScreen.selectSquare)
-        circleBtn.bind(on_release=self.parentScreen.selectCircle)
-        lineBtn.bind(on_release=self.parentScreen.selectLine)
-
-        # add buttons to layout
-        myLayout.add_widget(squareBtn)
-        myLayout.add_widget(circleBtn)
-        myLayout.add_widget(lineBtn)
 
 '''
 ColorSelectPopup() extends Kivy's Popup class https://kivy.org/docs/api-kivy.uix.popup.html
@@ -166,6 +138,14 @@ class DrawingWidget(Widget):
         self.color = color #color is a tuple that represents R,G,B, set the default color to Blue
         self.shapeStack = shapeStack
 
+    def normalizeVector(self, myVector):
+        """
+        Returns a unit vector based on the vector passed in
+        :param myVector: Numpy array representing the vector to normalize
+        :return: Numpy array representing the normalized vector
+        """
+        return myVector / np.linalg.norm(myVector)
+
     def drawVector(self, vectorOne, vectorTwo, color):
         """
         Draws a line between the 2 given points
@@ -185,7 +165,7 @@ class DrawingWidget(Widget):
         self.prevTouch = self.curTouch
         self.curTouch = touch
 
-        if self.resetTouch: #if reset flag raised, then set the previous touch to none
+        if self.resetTouch:  # if reset flag raised, then set the previous touch to none
             self.prevTouch = None
             self.resetTouch = False
 
@@ -290,30 +270,32 @@ class DrawingWidget(Widget):
         # magnitudeB = (math.sqrt(3) / 2) * r  # sin(60 degrees) * hypotenuse
 
         aVector_direction = centerOne - centerTwo
-        aVector_unit = aVector_direction / np.linalg.norm(aVector_direction)
+        aVector_unit = self.normalizeVector(aVector_direction)
+
         aVector_final = centerOne - (aVector_unit * magnitudeA)
 
-
+        rootVector = centerOne - aVector_final
 
         # https://gamedev.stackexchange.com/questions/70075/how-can-i-find-the-perpendicular-to-a-2d-vector
         bVector_initial = np.array([
-            -aVector_final[1],
-            aVector_final[0]
+            -rootVector[1],
+            rootVector[0]
         ])
 
-        sanityCheck = np.dot(aVector_final, bVector_initial)
+        sanityCheck = np.dot(rootVector, bVector_initial)
         print("aVector dot bVector_initial should be 0: " + str(sanityCheck))
 
-        bVector_unit = bVector_initial / np.linalg.norm(bVector_initial)
+        bVector_unit = self.normalizeVector(bVector_initial)
 
-        sanityCheck = np.dot(aVector_final, bVector_unit)
+        sanityCheck = np.dot(rootVector, bVector_unit)
         print("aVector dot bVector_unit should be 0: " + str(sanityCheck))
 
         bVector_final = aVector_final + (magnitudeB * bVector_unit)
+
         # finalVector = aVector_final + bVector_final
 
-        sanityCheck = np.dot(aVector_final, bVector_final)
-        print("aVector dot bVector_final should be 0: " + str(sanityCheck))
+        # sanityCheck = np.dot(aVector_final, bVector_final)
+        # print("aVector dot bVector_final should be 0: " + str(sanityCheck))
 
         # Draw Vector
         self.drawVector(centerOne, aVector_final, colorPurple)
@@ -321,6 +303,7 @@ class DrawingWidget(Widget):
         self.drawVector(bVector_unit, aVector_final, colorRed)
         self.drawVector(bVector_final, aVector_final, colorBlue)
 
+        # pass
 
         return bVector_final
 
@@ -611,29 +594,6 @@ class RootScreen(Screen):
 
     def setSize(self, thickness, radius):
         self.rootCanvas.currentDrawingWidget.setSize(thickness, radius)
-
-
-
-#     # Changes shape color to red - Eric Avery
-#     def selectRed(self, btn):
-#         print("selectRed()")
-#         self.color = CircleDraw.canvas.Color(1, 0, 0)
-#         #self.rootCanvas = (1, 0, 0)
-#         self.dismiss()
-#
-#         # Changes shape color to blue - Eric Avery
-#
-#     def selectBlue(self, btn):
-#         print("selectBlue()")
-#         self.parentScreen.color = (0, 1, 0)
-#         self.dismiss()
-#
-#         # Changes shape color to green - Eric Avery
-#
-#     def selectGreen(self, btn):
-#         print("selectGreen()")
-#         self.parentScreen.color = (0, 0, 1)
-#         self.dismiss()
 
 '''
 RootManager() extends ScreenManager https://kivy.org/docs/api-kivy.uix.screenmanager.html
