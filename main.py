@@ -16,34 +16,6 @@ import numpy as np
 
 Builder.load_file('PaintApp.kv')
 
-'''
-ShapeSelectPopup() extends Kivy's popup class https://kivy.org/docs/api-kivy.uix.popup.html
-This class contains 3 buttons, when the user taps a button, the popup should close, and the app should
-draw whatever shape the user selected.
-'''
-class ShapeSelectPopup(Popup):
-    def __init__(self, parentscreen, **kwargs):
-        super(ShapeSelectPopup, self).__init__(**kwargs)
-        # local variable for storing the parent screen of this popup
-        self.parentScreen = parentscreen
-
-        # link the layout object
-        myLayout = self.ids.shapeLayout
-
-        # create button objects
-        squareBtn = Button(text='Square')
-        circleBtn = Button(text='Circle')
-        lineBtn = Button(text='Line')
-
-        # bind to callbacks
-        squareBtn.bind(on_release=self.parentScreen.selectSquare)
-        circleBtn.bind(on_release=self.parentScreen.selectCircle)
-        lineBtn.bind(on_release=self.parentScreen.selectLine)
-
-        # add buttons to layout
-        myLayout.add_widget(squareBtn)
-        myLayout.add_widget(circleBtn)
-        myLayout.add_widget(lineBtn)
 
 '''
 ColorSelectPopup() extends Kivy's Popup class https://kivy.org/docs/api-kivy.uix.popup.html
@@ -193,7 +165,7 @@ class DrawingWidget(Widget):
         self.prevTouch = self.curTouch
         self.curTouch = touch
 
-        if self.resetTouch: #if reset flag raised, then set the previous touch to none
+        if self.resetTouch:  # if reset flag raised, then set the previous touch to none
             self.prevTouch = None
             self.resetTouch = False
 
@@ -299,7 +271,7 @@ class DrawingWidget(Widget):
 
         aVector_direction = centerOne - centerTwo
         aVector_unit = self.normalizeVector(aVector_direction)
-        # aVector_unit = aVector_direction / np.linalg.norm(aVector_direction)
+
         aVector_final = centerOne - (aVector_unit * magnitudeA)
 
         rootVector = centerOne - aVector_final
@@ -310,12 +282,12 @@ class DrawingWidget(Widget):
             rootVector[0]
         ])
 
-        sanityCheck = np.dot(aVector_final, bVector_initial)
+        sanityCheck = np.dot(rootVector, bVector_initial)
         print("aVector dot bVector_initial should be 0: " + str(sanityCheck))
 
         bVector_unit = self.normalizeVector(bVector_initial)
 
-        sanityCheck = np.dot(aVector_final, bVector_unit)
+        sanityCheck = np.dot(rootVector, bVector_unit)
         print("aVector dot bVector_unit should be 0: " + str(sanityCheck))
 
         bVector_final = aVector_final + (magnitudeB * bVector_unit)
@@ -332,6 +304,7 @@ class DrawingWidget(Widget):
         self.drawVector(bVector_final, aVector_final, colorBlue)
 
         # pass
+
         return bVector_final
 
     def adjustPoint(self, givenPoint, circle):
