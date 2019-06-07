@@ -59,6 +59,7 @@ class DrawingWidget(Widget):
 
         if self.curShape == "circle":
             useAdjustment = False
+            thirdCircleFlag = False
             if len(self.shapeStack) > 0:
                 if len(self.shapeStack) > 1:
                     point = {
@@ -66,7 +67,11 @@ class DrawingWidget(Widget):
                         'y': self.curTouch.y
                     }
 
-                    self.findIntersections(point, self.rootCircle)
+                    myAdjustedPoint = self.shapeStack[1]['adjustedPoint']
+                    thirdCenter = self.findIntersections(myAdjustedPoint, self.rootCircle)
+                    # self.findIntersections(point, self.rootCircle)
+                    thirdCircleFlag = True
+                    useAdjustment = False
                     pass
                 useAdjustment = True
                 point = {
@@ -79,24 +84,32 @@ class DrawingWidget(Widget):
                     'y': self.shapeStack[0]['Touch1'].y
                 }
                 adjustedPoint = self.adjustPoint(point, self.rootCircle)
-                thirdCenter = self.findIntersections(adjustedPoint, self.rootCircle)
+                # thirdCenter = self.findIntersections(adjustedPoint, self.rootCircle)
                 # print('Our adjusted point is: ' + str(adjustedPoint))
             with self.canvas:
                 Color(*self.color)
 
-                if useAdjustment:
+                if not thirdCircleFlag and useAdjustment:
                     Line(circle=(adjustedPoint[0], adjustedPoint[1], self.radius), width=self.thickness)
                     # Color(*(0, 1, 0))
-                    # Line(points=(self.rootCircle['x'], self.rootCircle['y'], adjustedPoint[0], adjustedPoint[1]),
-                    #      width=self.thickness)
+                    Line(points=(self.rootCircle['x'], self.rootCircle['y'], adjustedPoint[0], adjustedPoint[1]),
+                          width=self.thickness)
                     # Line(circle=(thirdCenter[0], thirdCenter[1], self.radius), width=self.thickness)
+                    shapeDict = {'Shape': "circle", 'Thickness': self.thickness, 'Radius': self.radius,
+                                 "Touch1": self.curTouch, "Touch2": None, 'adjustedPoint': adjustedPoint}
+                elif thirdCircleFlag:
+                    Line(circle=(thirdCenter[0], thirdCenter[1], self.radius), width=self.thickness)
+                    shapeDict = {'Shape': "circle", 'Thickness': self.thickness, 'Radius': self.radius,
+                                 "Touch1": self.curTouch, "Touch2": None, 'adjustedPoint': thirdCenter}
                 else:
                     Line(circle=(touch.x, touch.y, self.radius), width=self.thickness)
+                    shapeDict = {'Shape': "circle", 'Thickness': self.thickness, 'Radius': self.radius,
+                                 "Touch1": self.curTouch, "Touch2": None}
 
                 # todo: make this dictionary save the adjusted point somehow
                 # todo: Make ShapeDict a class called Shape
-                shapeDict = {'Shape': "circle", 'Thickness': self.thickness, 'Radius': self.radius,
-                             "Touch1": self.curTouch, "Touch2": None}
+                # shapeDict = {'Shape': "circle", 'Thickness': self.thickness, 'Radius': self.radius,
+                #              "Touch1": self.curTouch, "Touch2": None}
                 self.shapeStack.append(shapeDict)
         elif self.curShape == "square":
             # self.color = (0,1,0)
