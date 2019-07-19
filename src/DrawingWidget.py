@@ -134,15 +134,22 @@ class DrawingWidget(Widget):
             rootVector[0]
         ])
 
+        cVector_initial = np.array([
+            rootVector[1],
+            -rootVector[0]
+        ])
+
         sanityCheck = np.dot(rootVector, bVector_initial)
         print("aVector dot bVector_initial should be 0: " + str(sanityCheck))
 
         bVector_unit = self.normalizeVector(bVector_initial)
+        cVector_unit = self.normalizeVector(cVector_initial)
 
         sanityCheck = np.dot(rootVector, bVector_unit)
         print("aVector dot bVector_unit should be 0: " + str(sanityCheck))
 
         bVector_final = aVector_final + (magnitudeB * bVector_unit)
+        cVector_final = aVector_final + (magnitudeB * cVector_unit)
 
         # finalVector = aVector_final + bVector_final
 
@@ -157,7 +164,7 @@ class DrawingWidget(Widget):
 
         # pass
 
-        return bVector_final
+        return [bVector_final, cVector_final]
 
     def adjustPoint(self, givenPoint, circle):
         """
@@ -198,16 +205,31 @@ class DrawingWidget(Widget):
     def drawCircle(self):
         useAdjustment = False
         thirdCircleFlag = False
+        fourthCircleFlag = False
 
         if len(self.shapeStack) > 0:
             if len(self.shapeStack) > 1:
+                if len(self.shapeStack) > 2:
+                    fourthCircleFlag = True
 
-                myAdjustedPoint = self.shapeStack[1]['adjustedPoint']
-                thirdCenter = self.findIntersections(myAdjustedPoint, self.rootCircle)
+                # myAdjustedPoint = self.shapeStack[1]['adjustedPoint']
+                myAdjustedPoint = np.array([
+                    self.shapeStack[1].center['x'],
+                    self.shapeStack[1].center['y']
+                ])
+                intersections = self.findIntersections(myAdjustedPoint, self.rootCircle)
+                thirdCenter = intersections[0]
 
                 thirdCircleFlag = True
 
-            useAdjustment = True
+                if fourthCircleFlag:
+                    fourthCenter = intersections[1]
+                    thirdCircleFlag = False
+
+            if fourthCircleFlag:
+                useAdjustment = False
+            else:
+                useAdjustment = True
 
             point = {
                 'x': self.curTouch.x,
@@ -215,9 +237,9 @@ class DrawingWidget(Widget):
             }
 
             self.rootCircle = {
-                'radius': self.shapeStack[0]['Radius'],  # todo: remove hardcoded shape reference
-                'x': self.shapeStack[0]['Touch1'].x,
-                'y': self.shapeStack[0]['Touch1'].y
+                'radius': self.shapeStack[0].radius,  # todo: remove hardcoded shape reference
+                'x': self.shapeStack[0].center['x'],
+                'y': self.shapeStack[0].center['y']
             }
 
             adjustedPoint = self.adjustPoint(point, self.rootCircle)
@@ -253,6 +275,26 @@ class DrawingWidget(Widget):
                 center = {
                     'x': thirdCenter[0],
                     'y': thirdCenter[1]
+                }
+
+                shapeDict = {
+                    'Shape': "circle",
+                    'Thickness': self.thickness,
+                    'Radius': self.radius,
+                    'OriginalTouch': self.curTouch,
+                    'Endpoint1': None,
+                    'Endpoint2': None,
+                    'Center': center
+                }
+
+                tmpShape = Shape(shapeDict)
+
+            elif fourthCircleFlag:
+                Line(circle=(fourthCenter[0], fourthCenter[1], self.radius), width=self.thickness)
+
+                center = {
+                    'x': fourthCenter[0],
+                    'y': fourthCenter[1]
                 }
 
                 shapeDict = {
@@ -366,29 +408,29 @@ class DrawingWidget(Widget):
         return self.shapeStack.pop()
 
     def redrawShape(self, lastShape):
-        if lastShape['Shape'] == 'circle':
+        if lastShape.type == 'circle':
             with self.canvas:
                 Color(*self.color)
-                Line(circle=(lastShape['Touch1'].x, lastShape['Touch1'].y, lastShape['Radius']),
-                     width=lastShape['Thickness'])
-        elif lastShape['Shape'] == 'square':
+                Line(circle=(lastShape.center['x'], lastShape.center['y'], lastShape.radius),
+                     width=lastShape.thickness)
+        elif lastShape.type == 'square':
             with self.canvas:
                 Color(*self.color)
-                size = lastShape['Radius']
-                curTouch = lastShape['Touch1']
+                size = lastShape.radius
+                curTouch = lastShape.originalTouch
                 # Rectangle(pos=(touch.x, touch.y), size=(75, 75))
                 Line(points=(curTouch.x - size, curTouch.y + size,  # top left
                              curTouch.x - size, curTouch.y - size,  # bot left
                              curTouch.x + size, curTouch.y - size,  # bot right
                              curTouch.x + size, curTouch.y + size,),  # top right
-                     width=lastShape['Thickness'],
+                     width=lastShape.thickness,
                      close=True)
-        elif lastShape['Shape'] == 'line':
+        elif lastShape.type == 'line':
             with self.canvas:
                 Color(*self.color)
-                prevTouch = lastShape['Touch1']
-                curTouch = lastShape['Touch2']
-                Line(points=(prevTouch.x, prevTouch.y, curTouch.x, curTouch.y), width=lastShape['Thickness'])
+                prevTouch = lastShape.endpoint1
+                curTouch = lastShape.endpoint2
+                Line(points=(prevTouch['x'], prevTouch['y'], curTouch['x'], curTouch['y']), width=lastShape.thickness)
 
     def undoDraw(self):
         if len(self.shapeStack) == 0:  # if there are no shapes, do nothing
