@@ -72,19 +72,19 @@ class RootScreen(Screen):
     def selectSquare(self, btn):
         print("selectSquare()")
 
-        self.rootCanvas.currentDrawingWidget.drawSquare()
+        self.rootCanvas.currentDrawingWidget.setShape('square')
         self.shapeSelectPopup.dismiss()
 
     def selectCircle(self, btn):
         print("selectCircle()")
 
-        self.rootCanvas.currentDrawingWidget.drawCircle()
+        self.rootCanvas.currentDrawingWidget.setShape('circle')
         self.shapeSelectPopup.dismiss()
 
     def selectLine(self, btn):
         print("selectLine()")
 
-        self.rootCanvas.currentDrawingWidget.drawLine()
+        self.rootCanvas.currentDrawingWidget.setShape('line')
         self.shapeSelectPopup.dismiss()
 
     def setColor(self, redVal, greenVal, blueVal):
