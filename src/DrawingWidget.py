@@ -107,10 +107,10 @@ class DrawingWidget(Widget):
 
         The starting 
         """
-        # colorRed = (1, 0, 0)
-        # colorBlue = (0, 0, 1)
-        # colorGreen = (0, 1, 0)
-        # colorPurple = (1, 0, 0.75)
+        colorRed = (1, 0, 0)
+        colorBlue = (0, 0, 1)
+        colorGreen = (0, 1, 0)
+        colorPurple = (1, 0, 0.75)
 
         r = circle['radius']
         centerOne = np.array([
@@ -122,11 +122,16 @@ class DrawingWidget(Widget):
         # magnitudeB = (math.sqrt(3) / 2) * r  # sin(60 degrees) * hypotenuse
 
         aVector_direction = centerOne - centerTwo
+        dVector_direction = -(centerOne - centerTwo)
+
         aVector_unit = self.normalizeVector(aVector_direction)
+        dVector_unit = self.normalizeVector(dVector_direction)
 
         aVector_final = centerOne - (aVector_unit * magnitudeA)
+        dVector_final = centerOne - (dVector_unit * magnitudeA)
 
         rootVector = centerOne - aVector_final
+        rootVector2 = centerOne - dVector_final
 
         # https://gamedev.stackexchange.com/questions/70075/how-can-i-find-the-perpendicular-to-a-2d-vector
         bVector_initial = np.array([
@@ -139,17 +144,31 @@ class DrawingWidget(Widget):
             -rootVector[0]
         ])
 
+        eVector_initial = np.array([
+            -rootVector[1],
+            rootVector[0]
+        ])
+
+        fVector_initial = np.array([
+            rootVector[1],
+            -rootVector[0]
+        ])
+
         sanityCheck = np.dot(rootVector, bVector_initial)
         print("aVector dot bVector_initial should be 0: " + str(sanityCheck))
 
         bVector_unit = self.normalizeVector(bVector_initial)
         cVector_unit = self.normalizeVector(cVector_initial)
+        eVector_unit = self.normalizeVector(eVector_initial)
+        fVector_unit = self.normalizeVector(fVector_initial)
 
         sanityCheck = np.dot(rootVector, bVector_unit)
         print("aVector dot bVector_unit should be 0: " + str(sanityCheck))
 
         bVector_final = aVector_final + (magnitudeB * bVector_unit)
         cVector_final = aVector_final + (magnitudeB * cVector_unit)
+        eVector_final = dVector_final + (magnitudeB * eVector_unit)
+        fVector_final = dVector_final + (magnitudeB * fVector_unit)
 
         # finalVector = aVector_final + bVector_final
 
@@ -158,13 +177,16 @@ class DrawingWidget(Widget):
 
         # Draw Vector
         # self.drawVector(centerOne, aVector_final, colorPurple)
+        # self.drawVector(centerOne, dVector_final, colorRed)
+        # self.drawVector(eVector_final, dVector_final, colorGreen)
+        # self.drawVector(fVector_final, dVector_final, colorBlue)
         # self.drawVector(bVector_initial, aVector_final, colorGreen)
         # self.drawVector(bVector_unit, aVector_final, colorRed)
         # self.drawVector(bVector_final, aVector_final, colorBlue)
 
         # pass
 
-        return [bVector_final, cVector_final]
+        return [bVector_final, cVector_final, eVector_final, fVector_final]
 
     def adjustPoint(self, givenPoint, circle):
         """
@@ -203,13 +225,19 @@ class DrawingWidget(Widget):
 
     # each draw function changes this widget's curShape string
     def drawCircle(self):
-        useAdjustment = False
+        secondCircleFlag = False
         thirdCircleFlag = False
         fourthCircleFlag = False
+        fifthCircleFlag = False
+        sixthCircleFlag = False
 
         if len(self.shapeStack) > 0:
             if len(self.shapeStack) > 1:
                 if len(self.shapeStack) > 2:
+                    if len(self.shapeStack) > 3:
+                        if len(self.shapeStack) > 4:
+                            sixthCircleFlag = True
+                        fifthCircleFlag = True
                     fourthCircleFlag = True
 
                 # myAdjustedPoint = self.shapeStack[1]['adjustedPoint']
@@ -227,9 +255,9 @@ class DrawingWidget(Widget):
                     thirdCircleFlag = False
 
             if fourthCircleFlag:
-                useAdjustment = False
+                secondCircleFlag = False
             else:
-                useAdjustment = True
+                secondCircleFlag = True
 
             point = {
                 'x': self.curTouch.x,
@@ -247,7 +275,7 @@ class DrawingWidget(Widget):
         with self.canvas:
             Color(*self.color)
 
-            if not thirdCircleFlag and useAdjustment:
+            if not thirdCircleFlag and secondCircleFlag:
                 Line(circle=(adjustedPoint[0], adjustedPoint[1], self.radius), width=self.thickness)
                 # Line(points=(self.rootCircle['x'], self.rootCircle['y'], adjustedPoint[0], adjustedPoint[1]),
                 #      width=self.thickness)
