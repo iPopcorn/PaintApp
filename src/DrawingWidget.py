@@ -40,6 +40,7 @@ class DrawingWidget(Widget):
     thickness = 3
     shapeStack = []
     rootCircle = {}
+    intersections = []
 
     def __init__(self, shapeStack, color, **kwargs):
         super(DrawingWidget, self).__init__(*kwargs)
@@ -129,6 +130,7 @@ class DrawingWidget(Widget):
 
         aVector_final = centerOne - (aVector_unit * magnitudeA)
         dVector_final = centerOne - (dVector_unit * magnitudeA)
+        gVector_final = centerOne - (dVector_unit * r)
 
         rootVector = centerOne - aVector_final
         rootVector2 = centerOne - dVector_final
@@ -186,7 +188,7 @@ class DrawingWidget(Widget):
 
         # pass
 
-        return [bVector_final, cVector_final, eVector_final, fVector_final]
+        return [bVector_final, cVector_final, eVector_final, fVector_final, gVector_final]
 
     def adjustPoint(self, givenPoint, circle):
         """
@@ -225,40 +227,15 @@ class DrawingWidget(Widget):
 
     # each draw function changes this widget's curShape string
     def drawCircle(self):
-        secondCircleFlag = False
-        thirdCircleFlag = False
-        fourthCircleFlag = False
-        fifthCircleFlag = False
-        sixthCircleFlag = False
+        center = {}
 
-        if len(self.shapeStack) > 0:
-            if len(self.shapeStack) > 1:
-                if len(self.shapeStack) > 2:
-                    if len(self.shapeStack) > 3:
-                        if len(self.shapeStack) > 4:
-                            sixthCircleFlag = True
-                        fifthCircleFlag = True
-                    fourthCircleFlag = True
+        if len(self.shapeStack) == 0:  # 1st Circle
+            center = {
+                'x': self.curTouch.x,
+                'y': self.curTouch.y
+            }
 
-                # myAdjustedPoint = self.shapeStack[1]['adjustedPoint']
-                myAdjustedPoint = np.array([
-                    self.shapeStack[1].center['x'],
-                    self.shapeStack[1].center['y']
-                ])
-                intersections = self.findIntersections(myAdjustedPoint, self.rootCircle)
-                thirdCenter = intersections[0]
-
-                thirdCircleFlag = True
-
-                if fourthCircleFlag:
-                    fourthCenter = intersections[1]
-                    thirdCircleFlag = False
-
-            if fourthCircleFlag:
-                secondCircleFlag = False
-            else:
-                secondCircleFlag = True
-
+        if len(self.shapeStack) == 1:  # 2nd Circle
             point = {
                 'x': self.curTouch.x,
                 'y': self.curTouch.y
@@ -272,93 +249,74 @@ class DrawingWidget(Widget):
 
             adjustedPoint = self.adjustPoint(point, self.rootCircle)
 
+            center = {
+                'x': adjustedPoint[0],
+                'y': adjustedPoint[1]
+            }
+
+        elif len(self.shapeStack) == 2:  # 3rd Circle
+            myAdjustedPoint = np.array([
+                self.shapeStack[1].center['x'],
+                self.shapeStack[1].center['y']
+            ])
+
+            self.intersections = self.findIntersections(myAdjustedPoint, self.rootCircle)
+            thirdCenter = self.intersections[0]
+
+            center = {
+                'x': thirdCenter[0],
+                'y': thirdCenter[1]
+            }
+
+        elif len(self.shapeStack) == 3:  # 4th Circle
+            fourthCenter = self.intersections[1]
+
+            center = {
+                'x': fourthCenter[0],
+                'y': fourthCenter[1]
+            }
+
+        elif len(self.shapeStack) == 4:  # 5th Circle
+            fifthCenter = self.intersections[2]
+
+            center = {
+                'x': fifthCenter[0],
+                'y': fifthCenter[1]
+            }
+
+        elif len(self.shapeStack) == 5:  # 6th Circle
+            sixthCenter = self.intersections[3]
+
+            center = {
+                'x': sixthCenter[0],
+                'y': sixthCenter[1]
+            }
+
+        elif len(self.shapeStack) == 6:  # 7th Circle
+            seventhCenter = self.intersections[4]
+
+            center = {
+                'x': seventhCenter[0],
+                'y': seventhCenter[1]
+            }
+
         with self.canvas:
             Color(*self.color)
 
-            if not thirdCircleFlag and secondCircleFlag:
-                Line(circle=(adjustedPoint[0], adjustedPoint[1], self.radius), width=self.thickness)
-                # Line(points=(self.rootCircle['x'], self.rootCircle['y'], adjustedPoint[0], adjustedPoint[1]),
-                #      width=self.thickness)
+            Line(circle=(center['x'], center['y'], self.radius), width=self.thickness)
 
-                center = {
-                    'x': adjustedPoint[0],
-                    'y': adjustedPoint[1]
-                }
+            shapeDict = {
+                'Shape': "circle",
+                'Thickness': self.thickness,
+                'Radius': self.radius,
+                'OriginalTouch': self.curTouch,
+                'Endpoint1': None,
+                'Center': center,
+                'Endpoint2': None
+            }
 
-                shapeDict = {
-                    'Shape': "circle",
-                    'Thickness': self.thickness,
-                    'Radius': self.radius,
-                    'OriginalTouch': self.curTouch,
-                    'Endpoint1': None,
-                    'Center': center,
-                    'Endpoint2': None
-                }
+            tmpShape = Shape(shapeDict)
 
-                tmpShape = Shape(shapeDict)
-
-            elif thirdCircleFlag:
-                Line(circle=(thirdCenter[0], thirdCenter[1], self.radius), width=self.thickness)
-
-                center = {
-                    'x': thirdCenter[0],
-                    'y': thirdCenter[1]
-                }
-
-                shapeDict = {
-                    'Shape': "circle",
-                    'Thickness': self.thickness,
-                    'Radius': self.radius,
-                    'OriginalTouch': self.curTouch,
-                    'Endpoint1': None,
-                    'Endpoint2': None,
-                    'Center': center
-                }
-
-                tmpShape = Shape(shapeDict)
-
-            elif fourthCircleFlag:
-                Line(circle=(fourthCenter[0], fourthCenter[1], self.radius), width=self.thickness)
-
-                center = {
-                    'x': fourthCenter[0],
-                    'y': fourthCenter[1]
-                }
-
-                shapeDict = {
-                    'Shape': "circle",
-                    'Thickness': self.thickness,
-                    'Radius': self.radius,
-                    'OriginalTouch': self.curTouch,
-                    'Endpoint1': None,
-                    'Endpoint2': None,
-                    'Center': center
-                }
-
-                tmpShape = Shape(shapeDict)
-
-            else:
-                Line(circle=(self.curTouch.x, self.curTouch.y, self.radius), width=self.thickness)
-
-                center = {
-                    'x': self.curTouch.x,
-                    'y': self.curTouch.y
-                }
-
-                shapeDict = {
-                    'Shape': "circle",
-                    'Thickness': self.thickness,
-                    'Radius': self.radius,
-                    'OriginalTouch': self.curTouch,
-                    'Endpoint1': None,
-                    'Endpoint2': None,
-                    'Center': center
-                }
-
-                tmpShape = Shape(shapeDict)
-
-            # todo: make this dictionary save the adjusted point somehow
-            # todo: Make ShapeDict a class called Shape
             self.shapeStack.append(tmpShape)
 
     def drawSquare(self):
